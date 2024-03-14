@@ -1,0 +1,5 @@
+- Don't use new HTMLCanvasElement, instead use document.createElement
+- Don't use append, use appendChild
+- Use old KeyCode for input
+
+- use dir(foo) in python to search attributes

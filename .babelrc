@@ -1,0 +1,55 @@
+{
+    "env": {
+      "production": {
+        "presets": [
+            [
+                "minify",
+                {
+                    "mangle": {
+                        "exclude": ["MyCustomError"]
+                      },
+                      "keepFnName": false
+                }
+            ],
+            [ "@babel/preset-typescript"],
+            [
+                "@babel/preset-env",
+                {
+                    "corejs": { "version":3 },
+                    "useBuiltIns": "usage",
+                    "targets": {
+                        "ie": "11"
+                    },
+                    "loose":true
+                }
+            ]
+        ],
+        "plugins": [
+            ["@babel/plugin-proposal-decorators",{"decoratorsBeforeExport":true}],
+            ["@babel/plugin-proposal-class-properties"],
+            ["@babel/transform-runtime"]
+        ]
+      },
+      "development": {
+        "presets": [
+            [ "@babel/preset-typescript"],
+            [
+                "@babel/preset-env",
+                {
+                    "corejs": { "version":3 },
+                    "useBuiltIns": "usage",
+                    "targets": {
+                        
+                    }
+                }
+            ]
+        ],
+        "plugins": [
+            ["@babel/plugin-proposal-decorators",{"decoratorsBeforeExport":true}],
+            ["@babel/plugin-proposal-class-properties"],
+            ["@babel/transform-runtime"]
+        ]
+      }
+    }
+  }
+  
