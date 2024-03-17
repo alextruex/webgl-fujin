@@ -34,7 +34,7 @@ class RetroRenderer {
             'float offsetY = mod(v_tex.y*'+height+'.0,2.0);' +
             'float offsetX = mod(v_tex.x*'+width+'.0,2.0);' +
             'if(offsetY >= 0.0 && offsetY < 1.0) color *= 0.5;' +
-            'if(offsetX >= 0.0 && offsetX < 1.0) color *= 0.75;' +
+            'if(offsetX >= 0.0 && offsetX < 1.0) color *= 0.5;' +
             'gl_FragColor = vec4(color,1.0);' +
             '}');
         gl.compileShader(fShader);

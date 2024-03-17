@@ -96,9 +96,9 @@ class MeshRenderer {
 
             // Projection
             let matrix = [
-                1/this.width, 0, 0, 0,
-                0, 1 / this.height, 0, 0,
-                0, 0, -1 / this.height, 0,
+                2/this.width, 0, 0, 0,
+                0, 2 / this.height, 0, 0,
+                0, 0, -2 / this.height, 0,
                 -1, 1, 0, 1
             ];
 
