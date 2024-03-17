@@ -1,6 +1,5 @@
 import Mesh from './mesh';
-import models from '../assets/models';
-import images from '../assets/images';
+import modelIndex from '../assets/modelIndex';
 import {m3Multiply, m4Multiply} from '../math/matrix';
 
 class MeshRenderer {
@@ -68,11 +67,11 @@ class MeshRenderer {
         let index = 0;
         this.buffStart = {};
         this.buffLength = {};
-        for(let i in models){
-            data = data.concat(models[i]);
+        for(let i in modelIndex){
+            data = data.concat(modelIndex[i]);
             this.buffStart[i] = index;
-            this.buffLength[i] = models[i].length;
-            index += models[i].length;
+            this.buffLength[i] = modelIndex[i].length;
+            index += modelIndex[i].length;
         }
         this.buffer = <WebGLBuffer>gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
@@ -80,13 +79,15 @@ class MeshRenderer {
 
     }
 
-    render(gl:WebGLRenderingContext, meshes:Array<Mesh>){
+    setProg(gl:WebGLRenderingContext){
         // Set program
         gl.useProgram(this.prog)
         gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
         gl.vertexAttribPointer(this.a_pos, 3, gl.FLOAT, false, 20, 0);
         gl.vertexAttribPointer(this.a_tex, 2, gl.FLOAT, false, 20, 12);
+    }
 
+    render(gl:WebGLRenderingContext, meshes:Array<Mesh>){
         // Render meshes
         for(let i = 0; i < meshes.length; i++){
             let m = meshes[i];

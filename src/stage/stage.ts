@@ -10,8 +10,8 @@ class Stage{
         this.game = game;
 
         this.mesh = game.video.addMesh(64,64,'cube',0);
-        this.mesh.scaleU = 64/256;
-        this.mesh.scaleV = 64/256;
+        this.mesh.scaleU = 128/256;
+        this.mesh.scaleV = 128/256;
 
         let plane = game.video.addMesh(144,144,'sprite',1);
 

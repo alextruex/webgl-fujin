@@ -30,9 +30,7 @@ class RetroRenderer {
         'uniform sampler2D u_image;' +
         'varying vec2 v_tex;' +
         'void main() {' +
-            'vec3 color = texture2D(u_image, v_tex).xyz * 1.1;' +
-            'color += texture2D(u_image, v_tex + vec2(0.004,0.0)).xyz/3.0;' +
-            'color += texture2D(u_image, v_tex + vec2(-0.004,0.0)).xyz/3.0;' +
+            'vec3 color = texture2D(u_image, v_tex).xyz * 2.0;' +
             'float offsetY = mod(v_tex.y*'+height+'.0,2.0);' +
             'float offsetX = mod(v_tex.x*'+width+'.0,2.0);' +
             'if(offsetY >= 0.0 && offsetY < 1.0) color *= 0.5;' +
@@ -54,16 +52,20 @@ class RetroRenderer {
         this.a_pos = gl.getAttribLocation(this.prog,'a_pos');
         gl.enableVertexAttribArray(this.a_pos);
         gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 0, 0);
-        this.u_res = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_res');
-        gl.uniform2f(this.u_res, width * 2, height * 2)
-    }
-    
-    render(gl:WebGLRenderingContext){
 
-        // Set program
+        this.u_res = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_res');
+
+    }
+
+    setProg(gl:WebGLRenderingContext){
         gl.useProgram(this.prog);
         gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
         gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 0, 0);
+    }
+    
+    render(gl:WebGLRenderingContext){
+        // Set uniforms
+        gl.uniform2f(this.u_res, this.width, this.height)
 
         // Draw
         gl.drawArrays(gl.TRIANGLES, 0, 6);

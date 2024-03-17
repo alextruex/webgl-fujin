@@ -1,11 +1,9 @@
 import MeshRenderer from './meshrenderer';
-import FrameRenderer from './framerenderer';
 import RetroRenderer from './retrorenderer';
-import SpriteRenderer from './spriterenderer';
 
 import Mesh from './mesh';
 import Sprite from './sprite';
-import images from '../assets/images';
+import textureIndex from '../assets/textureIndex';
 
 class Video {
     canvas:HTMLCanvasElement;
@@ -16,9 +14,7 @@ class Video {
     textureSize:number;
 
     meshRn:MeshRenderer;
-    frameRn:FrameRenderer;
     retroRn:RetroRenderer;
-    spriteRn:SpriteRenderer;
 
     meshes:Array<Array<Mesh>>;
     sprites:Record<string,Sprite>;
@@ -65,24 +61,22 @@ class Video {
         this.meshes = [];
         this.sprites = {};
         this.meshRn = new MeshRenderer(this.width, this.height, this.textureSize, this.gl);
-        this.frameRn = new FrameRenderer(this.canvas.width, this.canvas.height, this.gl);
         this.retroRn = new RetroRenderer(this.canvas.width, this.canvas.height, this.gl);
-        this.spriteRn = new SpriteRenderer(this.canvas.width, this.canvas.height, this.gl);
 
         // Load textures
         this.textures = [];
-        for(let i = 0; i < images.length; i++){
+        for(let i = 0; i < textureIndex.length; i++){
             this.meshes[i] = [];
             let image = new Image();
-            image.src = 'img/' + images[i];
+            image.src = 'img/' + textureIndex[i];
             image.addEventListener('load', () => {
                 let tex = this.gl.createTexture();
                 this.gl.bindTexture(this.gl.TEXTURE_2D, tex);
                 this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
                 this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA,this.gl.UNSIGNED_BYTE, image);
-                this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-                this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-                this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+                //this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+                this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_NEAREST);
+                this.gl.generateMipmap(this.gl.TEXTURE_2D);
                 this.textures[i] = <WebGLTexture>tex;
             });
         }
@@ -109,22 +103,24 @@ class Video {
         return mesh;
     }
 
-    delMesh(index:string){
-        delete this.meshes[index];
+    sprite(mesh:Mesh,x:number,y:number,width:number,height:number){
+
     }
 
     render() {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
         this.gl.viewport(0,0,this.width,this.height);
+        this.meshRn.setProg(this.gl);
         for(let i = 0; i < this.textures.length; i++){
             this.gl.bindTexture(this.gl.TEXTURE_2D,this.textures[i]);
             this.meshRn.render(this.gl, this.meshes[i]);
         }
-        //this.spriteRn.render(this.width,this.height,this.gl);
+
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.viewport(0,0,this.canvas.width,this.canvas.height);
         this.gl.bindTexture(this.gl.TEXTURE_2D,this.fbTex1);
+        this.retroRn.setProg(this.gl);
         this.retroRn.render(this.gl);
     }
 }
