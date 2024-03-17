@@ -1,8 +1,6 @@
 let images = [
-    'test1.png',
-    'test2.gif',
-    'test2.png',
-    'raiden.png'
+    '00_test.png',
+    '01_player.png'
 ]
 
 export default images;

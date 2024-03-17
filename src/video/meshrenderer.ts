@@ -1,28 +1,26 @@
 import Mesh from './mesh';
-import Sprite from './sprite'
 import models from '../assets/models';
 import images from '../assets/images';
 import {m3Multiply, m4Multiply} from '../math/matrix';
 
 class MeshRenderer {
-    meshes:Record<string,Mesh>;
-    sprites:Record<string,Sprite>;
+    width:number;
+    height:number;
 
     prog:WebGLProgram;
     buffer:WebGLBuffer;
     buffStart:Record<string,number>;
     buffLength:Record<string,number>;
-    textures:Record<string,WebGLTexture>;
 
     a_pos:number;
     a_tex:number;
     u_pos:WebGLUniformLocation;
     u_tex:WebGLUniformLocation;
 
-    constructor(gl:WebGLRenderingContext, meshes:Record<string,Mesh>, sprites:Record<string,Sprite>) {
-        // Load objects to draw
-        this.meshes = meshes;
-        this.sprites = sprites;
+    constructor(width:number, height:number, gl:WebGLRenderingContext) {
+        // Set renderer resolution
+        this.width = width;
+        this.height = height;
 
         // Load vertex shader
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
@@ -78,27 +76,11 @@ class MeshRenderer {
         gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
 
-        // Load textures
-        this.textures = {};
-        for(let i in images){
-            let image = new Image();
-            image.src = 'img/' + images[i];
-            image.addEventListener('load', () => {
-                let tex = gl.createTexture();
-                gl.bindTexture(gl.TEXTURE_2D, tex);
-                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-                this.textures[images[i]] = <WebGLTexture>tex;
-            });
-        }
     }
 
-    render(width:number, height:number, gl:WebGLRenderingContext){
+    render(gl:WebGLRenderingContext, meshes:Array<Mesh>){
         // Clear
-        gl.clear(gl.COLOR_BUFFER_BIT);
+
 
         // Set program
         gl.useProgram(this.prog)
@@ -107,16 +89,16 @@ class MeshRenderer {
         gl.vertexAttribPointer(this.a_tex, 2, gl.FLOAT, false, 20, 12);
 
         // Draw each mesh
-        for(let i in this.meshes){
-            let m = this.meshes[i];
+        for(let i = 0; i < meshes.length; i++){
+            let m = meshes[i];
             let s = 0;
             let c = 0;
 
             // Projection
             let matrix = [
-                1/width, 0, 0, 0,
-                0, 1 / height, 0, 0,
-                0, 0, -1 / height, 0,
+                1/this.width, 0, 0, 0,
+                0, 1 / this.height, 0, 0,
+                0, 0, -1 / this.height, 0,
                 -1, 1, 0, 1
             ];
 
@@ -180,7 +162,7 @@ class MeshRenderer {
             let uvMatrix = [
                 1, 0, 0,
                 0, 1, 0,
-                0, 1, 0
+                0, 0, 1
             ];
 
             // UV Offset
@@ -200,9 +182,6 @@ class MeshRenderer {
             // Set matrix
             gl.uniformMatrix4fv(this.u_pos, false, matrix);
             gl.uniformMatrix3fv(this.u_tex, false, uvMatrix);
-            
-            // Set texture
-            gl.bindTexture(gl.TEXTURE_2D,this.textures[m.texture]);
 
             // Draw
             gl.drawArrays(gl.TRIANGLES,this.buffStart[m.model]/5,this.buffLength[m.model]/5);
