@@ -10,8 +10,10 @@ class Mesh{
     rotX:number;
     rotY:number;
     rotZ:number;
-    uOffset:number;
-    vOffset:number;
+    u:number;
+    v:number;
+    scaleU:number;
+    scaleV:number;
     ortho:boolean;
 
     constructor(x:number,y:number,model:string,texture:string){
@@ -26,9 +28,10 @@ class Mesh{
         this.rotX = 0;
         this.rotY = 0;
         this.rotZ = 0;
-
-        this.uOffset = 0;
-        this.vOffset = 0;
+        this.u = 0;
+        this.v = 0;
+        this.scaleU = 1;
+        this.scaleV = 1;
         this.ortho = true;
     }
 }

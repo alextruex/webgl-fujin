@@ -29,10 +29,8 @@ class Stage{
         if(this.game.input.poll('Q'))this.mesh.rotY -= 2;
         if(this.game.input.poll('E'))this.mesh.rotY += 2;
         if(this.game.input.poll('Z'))this.mesh.rotZ -= 2;
-        if(this.game.input.poll('C'))this.mesh.rotZ += 2;
-        if(this.game.input.poll('X'))this.mesh.scaleX += .05;
-        if(this.game.input.poll('X'))this.mesh.scaleY += .05;
-        if(this.game.input.poll('X'))this.mesh.scaleZ += .05;
+        if(this.game.input.poll('C'))this.mesh.u += .1;
+        if(this.game.input.poll('X'))this.mesh.v -= .1;
     }
 }
 

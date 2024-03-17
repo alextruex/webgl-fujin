@@ -2,7 +2,7 @@ import Mesh from './mesh';
 import Sprite from './sprite'
 import models from '../assets/models';
 import images from '../assets/images';
-import {m4Multiply} from '../math/matrix';
+import {m3Multiply, m4Multiply} from '../math/matrix';
 
 class MeshRenderer {
     meshes:Record<string,Mesh>;
@@ -28,15 +28,14 @@ class MeshRenderer {
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vShader, '' +
             'uniform mat4 u_pos;' +
-            'uniform vec2 u_tex;' +
+            'uniform mat3 u_tex;' +
             'attribute vec4 a_pos;' +
             'attribute vec2 a_tex;' +
             'varying vec2 v_tex;' +
             'varying vec2 v_uv;' +
             'void main(){' +
             'gl_Position = u_pos * a_pos;' +
-            'v_tex = a_tex;' +
-            'v_uv = u_tex;' +
+            'v_tex = (u_tex * vec3(a_tex,1.0)).xy;' +
             '}');
         gl.compileShader(vShader);
 
@@ -45,10 +44,9 @@ class MeshRenderer {
         gl.shaderSource(fShader, '' +
             'precision mediump float;' +
             'varying vec2 v_tex;' +
-            'varying vec2 v_uv;' +
             'uniform sampler2D u_texture;' +
             'void main() {' +
-            'vec4 color = texture2D(u_texture, vec2(v_tex.x + v_uv.x, v_tex.y + v_uv.y));' +
+            'vec4 color = texture2D(u_texture, vec2(v_tex.x, v_tex.y));' +
             'gl_FragColor = color;' +
             '}');
         gl.compileShader(fShader);
@@ -178,11 +176,30 @@ class MeshRenderer {
                 ])
             }
 
-            // Perpective
+            // UV Matrix
+            let uvMatrix = [
+                1, 0, 0,
+                0, 1, 0,
+                0, 1, 0
+            ];
+
+            // UV Offset
+            uvMatrix = m3Multiply(uvMatrix, [
+                1, 0, 0,
+                0, 1, 0,
+                m.u, m.v, 1
+            ]);
+
+            // UV Scale
+            uvMatrix = m3Multiply(uvMatrix, [
+                m.scaleU, 0, 0,
+                0, m.scaleV, 0,
+                0, 0, 1
+            ]);
 
             // Set matrix
             gl.uniformMatrix4fv(this.u_pos, false, matrix);
-            gl.uniform2fv(this.u_tex, [m.uOffset,m.vOffset]);
+            gl.uniformMatrix3fv(this.u_tex, false, uvMatrix);
             
             // Set texture
             gl.bindTexture(gl.TEXTURE_2D,this.textures[m.texture]);
