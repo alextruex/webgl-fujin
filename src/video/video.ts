@@ -2,7 +2,6 @@ import MeshRenderer from './meshrenderer';
 import RetroRenderer from './retrorenderer';
 
 import Mesh from './mesh';
-import Sprite from './sprite';
 import textureIndex from '../assets/textureIndex';
 
 class Video {
@@ -17,7 +16,6 @@ class Video {
     retroRn:RetroRenderer;
 
     meshes:Array<Array<Mesh>>;
-    sprites:Record<string,Sprite>;
     textures:Array<WebGLTexture>;
 
     fbTex1:WebGLTexture;
@@ -59,7 +57,6 @@ class Video {
  
         // Load renderers
         this.meshes = [];
-        this.sprites = {};
         this.meshRn = new MeshRenderer(this.width, this.height, this.textureSize, this.gl);
         this.retroRn = new RetroRenderer(this.canvas.width, this.canvas.height, this.gl);
 
@@ -74,8 +71,6 @@ class Video {
                 this.gl.bindTexture(this.gl.TEXTURE_2D, tex);
                 this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
                 this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA,this.gl.UNSIGNED_BYTE, image);
-                //this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-                this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_NEAREST);
                 this.gl.generateMipmap(this.gl.TEXTURE_2D);
                 this.textures[i] = <WebGLTexture>tex;
             });
@@ -88,8 +83,8 @@ class Video {
         this.fbTex1 = <WebGLTexture>this.gl.createTexture();
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.fbTex1);
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.width, this.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
         this.fb1 = <WebGLFramebuffer>this.gl.createFramebuffer();
@@ -103,8 +98,9 @@ class Video {
         return mesh;
     }
 
-    sprite(mesh:Mesh,x:number,y:number,width:number,height:number){
-
+    sprite(mesh:Mesh,u:number,v:number,width:number,height:number){
+        mesh.scaleU = this.textureSize / u;
+        mesh.scaleV = this.textureSize / v;
     }
 
     render() {
