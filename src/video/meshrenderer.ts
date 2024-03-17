@@ -6,6 +6,7 @@ import {m3Multiply, m4Multiply} from '../math/matrix';
 class MeshRenderer {
     width:number;
     height:number;
+    textureSize:number;
 
     prog:WebGLProgram;
     buffer:WebGLBuffer;
@@ -17,10 +18,11 @@ class MeshRenderer {
     u_pos:WebGLUniformLocation;
     u_tex:WebGLUniformLocation;
 
-    constructor(width:number, height:number, gl:WebGLRenderingContext) {
+    constructor(width:number, height:number, textureSize:number,gl:WebGLRenderingContext) {
         // Set renderer resolution
         this.width = width;
         this.height = height;
+        this.textureSize = textureSize;
 
         // Load vertex shader
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
@@ -79,16 +81,13 @@ class MeshRenderer {
     }
 
     render(gl:WebGLRenderingContext, meshes:Array<Mesh>){
-        // Clear
-
-
         // Set program
         gl.useProgram(this.prog)
         gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
         gl.vertexAttribPointer(this.a_pos, 3, gl.FLOAT, false, 20, 0);
         gl.vertexAttribPointer(this.a_tex, 2, gl.FLOAT, false, 20, 12);
 
-        // Draw each mesh
+        // Render meshes
         for(let i = 0; i < meshes.length; i++){
             let m = meshes[i];
             let s = 0;
@@ -169,7 +168,7 @@ class MeshRenderer {
             uvMatrix = m3Multiply(uvMatrix, [
                 1, 0, 0,
                 0, 1, 0,
-                m.u, m.v, 1
+                m.u/this.textureSize, m.v/this.textureSize, 1
             ]);
 
             // UV Scale

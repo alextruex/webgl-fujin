@@ -3,21 +3,18 @@ class Sprite{
     y:number;
     width:number;
     height:number;
-    clipX:number;
-    clipY:number;
-    clipW:number;
-    clipH:number;
-    img:string;
-    constructor(x:number,y:number,width:number,height:number,clipX:number,clipY:number,clipW:number,clipH:number,img:string){
+    u:number;
+    v:number;
+    texture:number;
+
+    constructor(x:number,y:number,width:number,height:number,u:number,v:number,texture:number){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.clipX = clipX;
-        this.clipY = clipY;
-        this.clipW = clipW;
-        this.clipH = clipH;
-        this.img = img;
+        this.u = u;
+        this.v = v;
+        this.texture = texture;
     }
 }
 

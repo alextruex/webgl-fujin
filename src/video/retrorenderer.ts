@@ -1,10 +1,17 @@
 class RetroRenderer {
+    width:number;
+    height:number;
+
     prog:WebGLProgram;
     buffer:WebGLBuffer;
     a_pos:number;
     u_res:WebGLUniformLocation;
 
     constructor(width, height, gl:WebGLRenderingContext) {
+        // Set renderer resolution
+        this.width = width;
+        this.height = height;
+
         // Load vertex shader
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vShader, '' +
@@ -49,19 +56,16 @@ class RetroRenderer {
         gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 0, 0);
         this.u_res = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_res');
         gl.uniform2f(this.u_res, width * 2, height * 2)
-
-        // Set texture
-        let tex = <WebGLTexture>gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D,tex);
     }
     
     render(gl:WebGLRenderingContext){
-        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        // Set program
         gl.useProgram(this.prog);
         gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
-        let a_pos = gl.getAttribLocation(this.prog,'a_pos');
-        gl.enableVertexAttribArray(a_pos);
-        gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 0, 0);
+
+        // Draw
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 }

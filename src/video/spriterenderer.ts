@@ -2,13 +2,18 @@ import Sprite from './sprite';
 import images from '../assets/images';
 
 class SpriteRenderer{
-    //sprites:Record<string,Sprite>;
+    width:number;
+    height:number;
+
     prog:WebGLProgram;
     buffer:WebGLBuffer;
     a_pos:number;
-    texture:WebGLTexture;
     
     constructor(width:number, height:number, gl:WebGLRenderingContext){
+        // Set renderer resolution
+        this.width = width;
+        this.height = height;
+        
         // Load vertex shader
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vShader, '' +
@@ -45,24 +50,11 @@ class SpriteRenderer{
         this.a_pos = gl.getAttribLocation(this.prog,'a_pos');
         gl.enableVertexAttribArray(this.a_pos);
         gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 0, 0);
-        
-        // Load texture
-        this.texture = <WebGLTexture>gl.createTexture();
-        let image = new Image();
-        image.src = 'img/megamanx4.png';
-        image.addEventListener('load', () => {
-            gl.bindTexture(gl.TEXTURE_2D, this.texture);
-            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        });
+
     }
 
     render(width:number, height:number, gl:WebGLRenderingContext){
         gl.useProgram(this.prog);
-        gl.bindTexture(gl.TEXTURE_2D,this.texture);
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }

@@ -1,6 +1,6 @@
 class Mesh{
     model:string;
-    texture:string;
+    texture:number;
     x:number;
     y:number;
     z:number;
@@ -16,7 +16,7 @@ class Mesh{
     scaleV:number;
     ortho:boolean;
 
-    constructor(x:number,y:number,model:string,texture:string){
+    constructor(x:number,y:number,model:string,texture:number){
         this.model = model;
         this.texture = texture;
         this.x = x;

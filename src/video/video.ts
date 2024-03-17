@@ -9,9 +9,11 @@ import images from '../assets/images';
 
 class Video {
     canvas:HTMLCanvasElement;
+    gl:WebGLRenderingContext;
+
     width:number;
     height:number;
-    gl:WebGLRenderingContext;
+    textureSize:number;
 
     meshRn:MeshRenderer;
     frameRn:FrameRenderer;
@@ -30,6 +32,7 @@ class Video {
         // Set internal resolution
         this.width = 240;
         this.height = 320;
+        this.textureSize = 256;
 
         // Load canvas
         this.canvas = <HTMLCanvasElement>document.createElement('canvas');
@@ -61,7 +64,7 @@ class Video {
         // Load renderers
         this.meshes = [];
         this.sprites = {};
-        this.meshRn = new MeshRenderer(this.width, this.height, this.gl);
+        this.meshRn = new MeshRenderer(this.width, this.height, this.textureSize, this.gl);
         this.frameRn = new FrameRenderer(this.canvas.width, this.canvas.height, this.gl);
         this.retroRn = new RetroRenderer(this.canvas.width, this.canvas.height, this.gl);
         this.spriteRn = new SpriteRenderer(this.canvas.width, this.canvas.height, this.gl);
@@ -100,8 +103,10 @@ class Video {
         this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.fbTex1, 0);
     }
 
-    addMesh(mesh:Mesh, texture:number) {
+    addMesh(x:number, y:number, model:string, texture:number) {
+        let mesh = new Mesh(x,y,model,texture);
         this.meshes[texture].push(mesh);
+        return mesh;
     }
 
     delMesh(index:string){
@@ -110,10 +115,12 @@ class Video {
 
     render() {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb1);
-        this.gl.viewport(0,0,this.width,this.height);
-        this.gl.bindTexture(this.gl.TEXTURE_2D,this.textures[0]);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-        this.meshRn.render(this.gl, this.meshes[0]);
+        this.gl.viewport(0,0,this.width,this.height);
+        for(let i = 0; i < this.textures.length; i++){
+            this.gl.bindTexture(this.gl.TEXTURE_2D,this.textures[i]);
+            this.meshRn.render(this.gl, this.meshes[i]);
+        }
         //this.spriteRn.render(this.width,this.height,this.gl);
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.viewport(0,0,this.canvas.width,this.canvas.height);
