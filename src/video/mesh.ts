@@ -14,6 +14,7 @@ class Mesh{
     v:number;
     scaleU:number;
     scaleV:number;
+    visible:true;
     ortho:boolean;
 
     constructor(x:number,y:number,model:string,texture:number){
@@ -32,6 +33,7 @@ class Mesh{
         this.v = 0;
         this.scaleU = 1;
         this.scaleV = 1;
+        this.visible = true;
         this.ortho = true;
     }
 }
