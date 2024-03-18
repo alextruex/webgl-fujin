@@ -13,13 +13,13 @@ class enemies{
         //this.enemy1.rotX += 2;
         //this.enemy1.rotY += 8;
         this.enemy1.y += 1;
-        this.enemy1.ortho = true;
+        this.enemy1.ortho = false;
 
-        if(this.game.input.poll('ArrowLeft')){
-           this.enemy1.x += 1;
+        if(this.game.input.poll('X')){
+           
         }
         if(this.game.input.poll('ArrowRight')){
-           this.enemy1.x -= 1;
+            
         }
     }
 }
