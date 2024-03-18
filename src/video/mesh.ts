@@ -14,7 +14,7 @@ class Mesh{
     v:number;
     scaleU:number;
     scaleV:number;
-    visible:true;
+    visible:boolean;
     ortho:boolean;
 
     constructor(x:number,y:number,model:string,texture:number){
