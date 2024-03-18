@@ -34,7 +34,7 @@ class Shape{
         this.scaleU = 1;
         this.scaleV = 1;
         this.visible = true;
-        this.ortho = true;
+        this.ortho = false;
     }
 }
 

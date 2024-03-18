@@ -19,7 +19,7 @@ class Video {
     shapeRn:ShapeRenderer;
     retroRn:RetroRenderer;
 
-    shapees:Array<Array<Shape>>;
+    shapes:Array<Array<Shape>>;
     textures:Array<WebGLTexture>;
 
     fbTex1:WebGLTexture;
@@ -60,14 +60,14 @@ class Video {
         this.gl.enable(this.gl.CULL_FACE);
  
         // Load renderers
-        this.shapees = [];
+        this.shapes = [];
         this.shapeRn = new ShapeRenderer(this.width, this.height, this.textureSize, this.gl);
         this.retroRn = new RetroRenderer(this.canvas.width, this.canvas.height, this.gl);
 
         // Load textures
         this.textures = [];
         for(let i = 0; i < textureIndex.length; i++){
-            this.shapees[i] = [];
+            this.shapes[i] = [];
             let image = new Image();
             image.src = 'img/' + textureIndex[i];
             image.addEventListener('load', () => {
@@ -98,7 +98,7 @@ class Video {
 
     addShape(x:number, y:number, model:string, texture:number) {
         let shape = new Shape(x,y,model,texture);
-        this.shapees[texture].push(shape);
+        this.shapes[texture].push(shape);
         return shape;
     }
 
@@ -118,7 +118,7 @@ class Video {
         this.shapeRn.setProg(this.gl);
         for(let i = 0; i < this.textures.length; i++){
             this.gl.bindTexture(this.gl.TEXTURE_2D,this.textures[i]);
-            this.shapeRn.render(this.gl, this.shapees[i]);
+            this.shapeRn.render(this.gl, this.shapes[i]);
         }
 
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);

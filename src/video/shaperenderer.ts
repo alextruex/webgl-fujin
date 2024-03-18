@@ -6,6 +6,7 @@ class ShapeRenderer {
     width: number;
     height: number;
     textureSize: number;
+    perspective: number;
 
     prog: WebGLProgram;
     buffer: WebGLBuffer;
@@ -16,24 +17,29 @@ class ShapeRenderer {
     a_tex: number;
     u_pos: WebGLUniformLocation;
     u_tex: WebGLUniformLocation;
+    u_foc: WebGLUniformLocation;
 
     constructor(width: number, height: number, textureSize: number, gl: WebGLRenderingContext) {
         // Set renderer resolution
         this.width = width;
         this.height = height;
         this.textureSize = textureSize;
+        this.perspective = 0.5;
 
         // Load vertex shader
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
         gl.shaderSource(vShader, '' +
             'uniform mat4 u_pos;' +
             'uniform mat3 u_tex;' +
+            'uniform float u_foc;' +
             'attribute vec4 a_pos;' +
             'attribute vec2 a_tex;' +
             'varying vec2 v_tex;' +
             'varying vec2 v_uv;' +
             'void main(){' +
-            'gl_Position = u_pos * a_pos;' +
+            'vec4 pos = u_pos * a_pos;' +
+            'float focZ = 1.0 + pos.z * u_foc;' +
+            'gl_Position = vec4(pos.xy / focZ, pos.zw);' +
             'v_tex = (u_tex * vec3(a_tex,1.0)).xy;' +
             '}');
         gl.compileShader(vShader);
@@ -61,6 +67,7 @@ class ShapeRenderer {
         gl.enableVertexAttribArray(this.a_tex);
         this.u_pos = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_pos');
         this.u_tex = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_tex');
+        this.u_foc = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_foc');
 
         // Load vertex buffer
         let data: Array<number> = [];
@@ -179,6 +186,10 @@ class ShapeRenderer {
                     0, m.scaleV, 0,
                     0, 0, 1
                 ]);
+
+                // Set perspective
+                if(m.ortho) gl.uniform1f(this.u_foc, this.perspective);
+                else gl.uniform1f(this.u_foc, 0);
 
                 // Set matrix
                 gl.uniformMatrix4fv(this.u_pos, false, matrix);
