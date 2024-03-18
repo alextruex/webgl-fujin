@@ -1,42 +1,42 @@
 import Game from '../game';
-import Mesh from '../video/mesh';
+import Shape from '../video/shape';
 
 class Player{
     game:Game;
-    mesh:Mesh;
-    exhaust:Mesh;
-    exhaust2:Mesh;
+    shape:Shape;
+    exhaust:Shape;
+    exhaust2:Shape;
     v:number = 0;
     h:number = 0;
     x:number = 0;
     y:number = 0;
     frame = 0;
-    bullets:Array<Mesh>;
+    bullets:Array<Shape>;
     bullet = 0;
     cooldown = 0;
-    cooldownMesh:Mesh;
+    cooldownShape:Shape;
 
     constructor(game:Game){
         this.game = game;
         this.x = 120;
         this.y = 240;
         this.bullets = [];
-        this.mesh = game.video.addMesh(this.x,this.y,'sprite',1);
-        this.exhaust = game.video.addMesh(this.x-16,this.y+24,'sprite',1);
-        this.exhaust2 = game.video.addMesh(this.x+16,this.y+24,'sprite',1);
-        this.cooldownMesh = game.video.addMesh(this.x,this.y-8,'sprite',1);
-        game.video.sprite(this.mesh,48,0,24,24);
+        this.shape = game.video.addShape(this.x,this.y,'sprite',1);
+        this.exhaust = game.video.addShape(this.x-16,this.y+24,'sprite',1);
+        this.exhaust2 = game.video.addShape(this.x+16,this.y+24,'sprite',1);
+        this.cooldownShape = game.video.addShape(this.x,this.y-8,'sprite',1);
+        game.video.sprite(this.shape,48,0,24,24);
         game.video.sprite(this.exhaust,48,24,24,24);
-        game.video.sprite(this.cooldownMesh,0,48,24,8);
+        game.video.sprite(this.cooldownShape,0,48,24,8);
         for(let i = 0; i < 8; i++){
-            this.bullets.push(game.video.addMesh(this.x,this.y,'sprite',1));
+            this.bullets.push(game.video.addShape(this.x,this.y,'sprite',1));
             game.video.sprite(this.bullets[i],0,24,24,8);
             //this.bullets[i].visible = false;
         }
     }
 
     update(){
-        let m = this.mesh;
+        let m = this.shape;
         let t = this;
         let e = this.exhaust;
         let e2 = this.exhaust2;
@@ -80,7 +80,7 @@ class Player{
         this.game.video.sprite(this.exhaust,Math.round(this.frame)*8+48,24,8,24);
         this.game.video.sprite(this.exhaust2,Math.round(7 - this.frame)*8+48,24,8,24);
 
-        this.game.video.sprite(this.cooldownMesh,0,24+(6-this.cooldown)*8,24,8);
+        this.game.video.sprite(this.cooldownShape,0,24+(6-this.cooldown)*8,24,8);
 
         t.x += t.h;
         t.y += t.v;
@@ -91,8 +91,8 @@ class Player{
         e.y = Math.round(t.y+24);
         e2.x = Math.round(t.x+4 - Math.abs(t.h));
         e2.y = Math.round(t.y+24);
-        this.cooldownMesh.x = t.x;
-        this.cooldownMesh.y = t.y-10;
+        this.cooldownShape.x = t.x;
+        this.cooldownShape.y = t.y-10;
     }
 }
 

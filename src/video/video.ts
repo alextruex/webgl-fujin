@@ -1,8 +1,12 @@
-import MeshRenderer from './meshrenderer';
+import ShapeRenderer from './shaperenderer';
 import RetroRenderer from './retrorenderer';
 
-import Mesh from './mesh';
-import textureIndex from '../assets/textureIndex';
+import Shape from './shape';
+let textureIndex:Array<string> = [
+    '00_test.png',
+    '01_player.png',
+    '02_enemies.png'
+]
 
 class Video {
     canvas:HTMLCanvasElement;
@@ -12,10 +16,10 @@ class Video {
     height:number;
     textureSize:number;
 
-    meshRn:MeshRenderer;
+    shapeRn:ShapeRenderer;
     retroRn:RetroRenderer;
 
-    meshes:Array<Array<Mesh>>;
+    shapees:Array<Array<Shape>>;
     textures:Array<WebGLTexture>;
 
     fbTex1:WebGLTexture;
@@ -56,14 +60,14 @@ class Video {
         this.gl.enable(this.gl.CULL_FACE);
  
         // Load renderers
-        this.meshes = [];
-        this.meshRn = new MeshRenderer(this.width, this.height, this.textureSize, this.gl);
+        this.shapees = [];
+        this.shapeRn = new ShapeRenderer(this.width, this.height, this.textureSize, this.gl);
         this.retroRn = new RetroRenderer(this.canvas.width, this.canvas.height, this.gl);
 
         // Load textures
         this.textures = [];
         for(let i = 0; i < textureIndex.length; i++){
-            this.meshes[i] = [];
+            this.shapees[i] = [];
             let image = new Image();
             image.src = 'img/' + textureIndex[i];
             image.addEventListener('load', () => {
@@ -92,29 +96,29 @@ class Video {
         this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.fbTex1, 0);
     }
 
-    addMesh(x:number, y:number, model:string, texture:number) {
-        let mesh = new Mesh(x,y,model,texture);
-        this.meshes[texture].push(mesh);
-        return mesh;
+    addShape(x:number, y:number, model:string, texture:number) {
+        let shape = new Shape(x,y,model,texture);
+        this.shapees[texture].push(shape);
+        return shape;
     }
 
-    sprite(mesh:Mesh,u:number,v:number,width:number,height:number){
-        mesh.scaleX = width/2;
-        mesh.scaleY = height/2;
-        mesh.scaleU = width / this.textureSize;
-        mesh.scaleV = height / this.textureSize;
-        mesh.u = u;
-        mesh.v = this.textureSize - v - height;
+    sprite(shape:Shape,u:number,v:number,width:number,height:number){
+        shape.scaleX = width/2;
+        shape.scaleY = height/2;
+        shape.scaleU = width / this.textureSize;
+        shape.scaleV = height / this.textureSize;
+        shape.u = u;
+        shape.v = this.textureSize - v - height;
     }
 
     render() {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT);
         this.gl.viewport(0,0,this.width,this.height);
-        this.meshRn.setProg(this.gl);
+        this.shapeRn.setProg(this.gl);
         for(let i = 0; i < this.textures.length; i++){
             this.gl.bindTexture(this.gl.TEXTURE_2D,this.textures[i]);
-            this.meshRn.render(this.gl, this.meshes[i]);
+            this.shapeRn.render(this.gl, this.shapees[i]);
         }
 
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);

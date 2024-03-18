@@ -1,8 +1,8 @@
-import Mesh from './mesh';
-import modelIndex from '../assets/modelIndex';
+import Shape from './shape';
+import geometry from '../geometry/geometry';
 import { m3Multiply, m4Multiply } from '../math/matrix';
 
-class MeshRenderer {
+class ShapeRenderer {
     width: number;
     height: number;
     textureSize: number;
@@ -67,11 +67,11 @@ class MeshRenderer {
         let index = 0;
         this.buffStart = {};
         this.buffLength = {};
-        for (let i in modelIndex) {
-            data = data.concat(modelIndex[i]);
+        for (let i in geometry) {
+            data = data.concat(geometry[i]);
             this.buffStart[i] = index;
-            this.buffLength[i] = modelIndex[i].length;
-            index += modelIndex[i].length;
+            this.buffLength[i] = geometry[i].length;
+            index += geometry[i].length;
         }
         this.buffer = <WebGLBuffer>gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
@@ -87,10 +87,10 @@ class MeshRenderer {
         gl.vertexAttribPointer(this.a_tex, 2, gl.FLOAT, false, 20, 12);
     }
 
-    render(gl: WebGLRenderingContext, meshes: Array<Mesh>) {
-        // Render meshes
-        for (let i = 0; i < meshes.length; i++) {
-            let m = meshes[i];
+    render(gl: WebGLRenderingContext, shapees: Array<Shape>) {
+        // Render shapees
+        for (let i = 0; i < shapees.length; i++) {
+            let m = shapees[i];
             if (m.visible) {
                 let s = 0;
                 let c = 0;
@@ -193,4 +193,4 @@ class MeshRenderer {
     }
 }
 
-export default MeshRenderer;
+export default ShapeRenderer;
