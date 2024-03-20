@@ -21,15 +21,15 @@ class Player{
         this.x = 120;
         this.y = 240;
         this.bullets = [];
-        this.shape = game.video.addShape(this.x,this.y,'sprite',1);
-        this.exhaust = game.video.addShape(this.x-16,this.y+24,'sprite',1);
-        this.exhaust2 = game.video.addShape(this.x+16,this.y+24,'sprite',1);
-        this.cooldownShape = game.video.addShape(this.x,this.y-8,'sprite',1);
+        this.shape = game.video.addShape(this.x,this.y,'plane',1);
+        this.exhaust = game.video.addShape(this.x-16,this.y+24,'plane',1);
+        this.exhaust2 = game.video.addShape(this.x+16,this.y+24,'plane',1);
+        this.cooldownShape = game.video.addShape(this.x,this.y-8,'plane',1);
         game.video.sprite(this.shape,48,0,24,24);
         game.video.sprite(this.exhaust,48,24,24,24);
         game.video.sprite(this.cooldownShape,0,48,24,8);
         for(let i = 0; i < 8; i++){
-            this.bullets.push(game.video.addShape(this.x,this.y,'sprite',1));
+            this.bullets.push(game.video.addShape(this.x,this.y,'plane',1));
             game.video.sprite(this.bullets[i],0,24,24,8);
             //this.bullets[i].visible = false;
         }

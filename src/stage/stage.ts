@@ -19,8 +19,8 @@ class Stage{
         this.shape.scaleX = .5;
         this.shape.scaleY = .5;
         this.shape.scaleZ = .5;
-        this.shape.scaleU = 64/256;
-        this.shape.scaleV = 64/256;
+        //this.shape.scaleU = 64/256;
+        //this.shape.scaleV = 64/256;
 
     }
 

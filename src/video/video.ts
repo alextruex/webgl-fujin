@@ -1,4 +1,4 @@
-import ShapeRenderer from './shaperenderer';
+import MeshRenderer from './meshrenderer';
 import RetroRenderer from './retrorenderer';
 import Shape from './shape';
 
@@ -16,7 +16,7 @@ class Video {
     height:number;
     textureSize:number;
 
-    shapeRn:ShapeRenderer;
+    shapeRn:MeshRenderer;
     retroRn:RetroRenderer;
 
     shapes:Array<Array<Shape>>;
@@ -61,7 +61,7 @@ class Video {
  
         // Load renderers
         this.shapes = [];
-        this.shapeRn = new ShapeRenderer(this.width, this.height, this.textureSize, this.gl);
+        this.shapeRn = new MeshRenderer(this.width, this.height, this.textureSize, this.gl);
         this.retroRn = new RetroRenderer(this.canvas.width, this.canvas.height, this.gl);
 
         // Load textures

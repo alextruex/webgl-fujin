@@ -1,8 +1,8 @@
 import Shape from './shape';
-import geometry from '../geometry/geometry';
+import modelIndex from '../models/modelIndex';
 import { m3Multiply, m4Multiply } from '../math/matrix';
 
-class ShapeRenderer {
+class MeshRenderer {
     width:number;
     height:number;
     textureSize:number;
@@ -67,13 +67,46 @@ class ShapeRenderer {
         // Load vertex buffer
         let data:Array<number> = [];
         let index = 0;
+        let scale = 32;
         this.buffStart = {};
         this.buffLength = {};
-        for (let i in geometry) {
-            data = data.concat(geometry[i]);
-            this.buffStart[i] = index;
-            this.buffLength[i] = geometry[i].length;
-            index += geometry[i].length;
+
+        // Parse OBJ files
+        for (let m in modelIndex) { // Each model
+            let verts:Array<Array<number>> = [];
+            let uv:Array<Array<number>> = [];
+            let faces:Array<Array<Array<number>>> = [];
+
+            let rows = modelIndex[m].split('\n');
+            for(let r in rows){
+                let row = rows[r].split(' ');
+                if (row[0] == 'v') verts.push([row[1],row[2],row[3]]);
+                if (row[0] == 'vt') uv.push([row[1],row[2]]);
+                if (row[0] == 'f') faces.push([row[1].split('/'),row[2].split('/'),row[3].split('/')])
+            }
+
+            for(let f in faces){ 
+                let face = faces[f]; // Each face
+                for(let vrt in face){
+                    let vertex = face[vrt]; // Each vertex
+                    let pos = vertex[0]-1;
+                    let tex = vertex[1]-1;
+                    let x = verts[pos][0]*scale;
+                    let y = verts[pos][1]*scale;
+                    let z = verts[pos][2]*scale;
+                    let u = uv[tex][0];
+                    let v = uv[tex][1];
+                    data = data.concat([x,y,z,u,v]);
+                }
+            }
+            console.log(faces.length);
+            this.buffStart[m] = index;
+            this.buffLength[m] = faces.length * 15;
+            index += faces.length * 15
+
+            console.log(m);
+            console.log(this.buffLength[m]);
+
         }
         this.buffer = <WebGLBuffer>gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
@@ -201,4 +234,4 @@ class ShapeRenderer {
     }
 }
 
-export default ShapeRenderer;
+export default MeshRenderer;

@@ -5,7 +5,7 @@ class enemies{
     enemy1:Shape;
     game:Game;
     constructor(game:Game){
-        this.enemy1 = game.video.addShape(64,64,'enemy1',2);
+        this.enemy1 = game.video.addShape(64,64,'icosahedron',2);
         this.game = game;
     }
 

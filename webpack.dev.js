@@ -14,6 +14,10 @@ module.exports = [
           exclude: /node_modules/,
           loader: "ts-loader",
         },
+        {
+          test: /\.obj$/,
+          type: 'asset/source',
+        }
       ],
     },
     resolve: {
