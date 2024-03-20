@@ -22,8 +22,9 @@ class Video {
     shapes:Array<Array<Shape>>;
     textures:Array<WebGLTexture>;
 
-    fbTex1:WebGLTexture;
-    fb1:WebGLFramebuffer;
+    fb:WebGLFramebuffer;
+    fbColor:WebGLTexture;
+    fbDepth:WebGLRenderbuffer;
     retro:boolean;
 
     constructor() {
@@ -57,7 +58,8 @@ class Video {
         this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
         this.gl.enable(this.gl.BLEND);
-        this.gl.enable(this.gl.CULL_FACE);
+        this.gl.enable(this.gl.DEPTH_TEST);
+
  
         // Load renderers
         this.shapes = [];
@@ -83,17 +85,26 @@ class Video {
         // Enable retro renderer
         this.retro = true;
 
-        // Set framebuffers
-        this.fbTex1 = <WebGLTexture>this.gl.createTexture();
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.fbTex1);
+        // Set fb color texture
+        this.fbColor = <WebGLTexture>this.gl.createTexture();
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.fbColor);
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.width, this.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-        this.fb1 = <WebGLFramebuffer>this.gl.createFramebuffer();
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb1);
-        this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.fbTex1, 0);
+
+        // Set fb depth texture
+        this.fbDepth = <WebGLRenderbuffer>this.gl.createRenderbuffer();
+        this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.fbDepth);
+        this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, this.width, this.height);
+
+        // Set framebuffer
+        this.fb = <WebGLFramebuffer>this.gl.createFramebuffer();
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb);
+        this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.fbColor, 0);
+        this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, this.fbDepth);      
+        
     }
 
     addShape(x:number, y:number, model:string, texture:number) {
@@ -112,9 +123,10 @@ class Video {
     }
 
     render() {
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb1);
-        this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb);
         this.gl.viewport(0,0,this.width,this.height);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+
         this.shapeRn.setProg(this.gl);
         for(let i = 0; i < this.textures.length; i++){
             this.gl.bindTexture(this.gl.TEXTURE_2D,this.textures[i]);
@@ -123,8 +135,9 @@ class Video {
 
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.viewport(0,0,this.canvas.width,this.canvas.height);
-        this.gl.bindTexture(this.gl.TEXTURE_2D,this.fbTex1);
+
         this.retroRn.setProg(this.gl);
+        this.gl.bindTexture(this.gl.TEXTURE_2D,this.fbColor);
         this.retroRn.render(this.gl);
     }
 }

@@ -4,32 +4,56 @@ import Shape from '../video/shape';
 import Enemies from './enemies';
 
 class Stage{
-    player:Player;
+    //player:Player;
     shape:Shape;
     game:Game;
-    enemies:Enemies;
+    //enemies:Enemies;
 
     constructor(game:Game){
         this.game = game;
-        this.enemies = new Enemies(game);
-
-        this.player = new Player(game);
-
-        this.shape = game.video.addShape(120,64,'cube',0);
-        this.shape.scaleX = .5;
-        this.shape.scaleY = .5;
-        this.shape.scaleZ = .5;
-        //this.shape.scaleU = 64/256;
-        //this.shape.scaleV = 64/256;
-
+        this.shape = game.video.addShape(120,160,'monkey',0);
     }
 
     update(){
-        this.player.update();
-        this.enemies.update();
 
-        this.shape.rotX += 2;
-        this.shape.rotY += 2;
+        this.shape.ortho = false;
+
+        if(this.game.input.poll('ArrowLeft')){
+            this.shape.x -= 1;
+        }
+        if(this.game.input.poll('ArrowRight')){
+            this.shape.x += 1;
+        }
+        if(this.game.input.poll('ArrowUp')){
+            this.shape.y -= 1;
+        }
+        if(this.game.input.poll('ArrowDown')){
+            this.shape.y += 1;
+        }
+        if(this.game.input.poll('C')){
+            this.shape.z -= 1;
+        }
+        if(this.game.input.poll('Z')){
+            this.shape.z += 1;
+        }
+        if(this.game.input.poll('W')){
+            this.shape.rotX -= 1;
+        }
+        if(this.game.input.poll('S')){
+            this.shape.rotX += 1;
+        }
+        if(this.game.input.poll('Q')){
+            this.shape.rotZ -= 1;
+        }
+        if(this.game.input.poll('E')){
+            this.shape.rotZ += 1;
+        }
+        if(this.game.input.poll('A')){
+            this.shape.rotY -= 1;
+        }
+        if(this.game.input.poll('D')){
+            this.shape.rotY += 1;
+        }
     }
 }
 

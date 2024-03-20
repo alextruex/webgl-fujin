@@ -22,6 +22,8 @@ class Player{
         this.y = 240;
         this.bullets = [];
         this.shape = game.video.addShape(this.x,this.y,'plane',1);
+
+        
         this.exhaust = game.video.addShape(this.x-16,this.y+24,'plane',1);
         this.exhaust2 = game.video.addShape(this.x+16,this.y+24,'plane',1);
         this.cooldownShape = game.video.addShape(this.x,this.y-8,'plane',1);

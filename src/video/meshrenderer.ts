@@ -5,6 +5,7 @@ import { m3Multiply, m4Multiply } from '../math/matrix';
 class MeshRenderer {
     width:number;
     height:number;
+    depth:number;
     textureSize:number;
     focalLength:number;
 
@@ -22,8 +23,9 @@ class MeshRenderer {
         // Set renderer resolution
         this.width = width;
         this.height = height;
+        this.depth = height;
         this.textureSize = textureSize;
-        this.focalLength = .005;
+        this.focalLength = .05;
 
         // Load vertex shader
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
@@ -99,14 +101,10 @@ class MeshRenderer {
                     data = data.concat([x,y,z,u,v]);
                 }
             }
-            console.log(faces.length);
+
             this.buffStart[m] = index;
             this.buffLength[m] = faces.length * 15;
-            index += faces.length * 15
-
-            console.log(m);
-            console.log(this.buffLength[m]);
-
+            index += faces.length * 15;
         }
         this.buffer = <WebGLBuffer>gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
@@ -116,7 +114,7 @@ class MeshRenderer {
 
     setProg(gl:WebGLRenderingContext) {
         // Set program
-        gl.useProgram(this.prog)
+        gl.useProgram(this.prog);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.vertexAttribPointer(this.a_pos, 3, gl.FLOAT, false, 20, 0);
         gl.vertexAttribPointer(this.a_tex, 2, gl.FLOAT, false, 20, 12);
@@ -129,14 +127,15 @@ class MeshRenderer {
             if (m.visible) {
                 let s = 0;
                 let c = 0;
-                let foc = this.focalLength;
+                //let foc = this.focalLength;
+                let foc = .01;
                 if(m.ortho) foc = 0;
 
                 // Projection
                 let matrix = [
                     2/this.width,0,0,0,
                     0,2/this.height,0,0,
-                    0,0,-2/this.height,-foc,
+                    0,0,2/this.depth,foc,
                     -1,1,0,1
                 ];
 
