@@ -1,12 +1,12 @@
 import * as cube from './cube.obj';
-import * as plane from './plane.obj';
+import * as sprite from './sprite.obj';
 import * as icosahedron from './icosahedron.obj';
 import * as arch from './arch.obj';
 import * as monkey from './monkey.obj';
 
 let modelIndex = {
     'cube':cube,
-    'plane':plane,
+    'sprite':sprite,
     'icosahedron':icosahedron,
     'arch':arch,
     'monkey':monkey

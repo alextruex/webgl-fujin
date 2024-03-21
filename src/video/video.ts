@@ -1,6 +1,6 @@
 import MeshRenderer from './meshrenderer';
 import RetroRenderer from './retrorenderer';
-import Shape from './shape';
+import Mesh from './mesh';
 
 let textureIndex:Array<string> = [
     '00_test.png',
@@ -16,10 +16,10 @@ class Video {
     height:number;
     textureSize:number;
 
-    shapeRn:MeshRenderer;
+    meshRn:MeshRenderer;
     retroRn:RetroRenderer;
 
-    shapes:Array<Array<Shape>>;
+    meshes:Array<Array<Mesh>>;
     textures:Array<WebGLTexture>;
 
     fb:WebGLFramebuffer;
@@ -60,16 +60,16 @@ class Video {
         this.gl.enable(this.gl.BLEND);
         this.gl.enable(this.gl.DEPTH_TEST);
 
- 
+
         // Load renderers
-        this.shapes = [];
-        this.shapeRn = new MeshRenderer(this.width, this.height, this.textureSize, this.gl);
+        this.meshes = [];
+        this.meshRn = new MeshRenderer(this.width, this.height, this.textureSize, this.gl);
         this.retroRn = new RetroRenderer(this.canvas.width, this.canvas.height, this.gl);
 
         // Load textures
         this.textures = [];
         for(let i = 0; i < textureIndex.length; i++){
-            this.shapes[i] = [];
+            this.meshes[i] = [];
             let image = new Image();
             image.src = 'img/' + textureIndex[i];
             image.addEventListener('load', () => {
@@ -85,7 +85,7 @@ class Video {
         // Enable retro renderer
         this.retro = true;
 
-        // Set fb color texture
+        // Set fb color
         this.fbColor = <WebGLTexture>this.gl.createTexture();
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.fbColor);
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.width, this.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
@@ -94,7 +94,7 @@ class Video {
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 
-        // Set fb depth texture
+        // Set fb depth
         this.fbDepth = <WebGLRenderbuffer>this.gl.createRenderbuffer();
         this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.fbDepth);
         this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, this.width, this.height);
@@ -104,22 +104,24 @@ class Video {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb);
         this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.fbColor, 0);
         this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, this.fbDepth);      
-        
     }
 
-    addShape(x:number, y:number, model:string, texture:number) {
-        let shape = new Shape(x,y,model,texture);
-        this.shapes[texture].push(shape);
-        return shape;
+    addMesh(x:number, y:number, model:string, texture:number) {
+        let mesh = new Mesh(x,y,model,texture);
+        this.meshes[texture].push(mesh);
+        return mesh;
     }
 
-    sprite(shape:Shape,u:number,v:number,width:number,height:number){
-        shape.scaleX = width/2;
-        shape.scaleY = height/2;
-        shape.scaleU = width / this.textureSize;
-        shape.scaleV = height / this.textureSize;
-        shape.u = u;
-        shape.v = this.textureSize - v - height;
+    addSprite(x:number, y:number, width:number, height:number, u:number, v:number, texture:number){
+        let mesh = new Mesh(x,y,'sprite',texture);
+        mesh.scaleX = width;
+        mesh.scaleY = height;
+        mesh.scaleU = width/this.textureSize;
+        mesh.scaleV = height/this.textureSize;
+        mesh.u = u;
+        mesh.v = v;
+        this.meshes[texture].push(mesh);
+        return mesh;
     }
 
     render() {
@@ -127,10 +129,10 @@ class Video {
         this.gl.viewport(0,0,this.width,this.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-        this.shapeRn.setProg(this.gl);
+        this.meshRn.setProg(this.gl);
         for(let i = 0; i < this.textures.length; i++){
             this.gl.bindTexture(this.gl.TEXTURE_2D,this.textures[i]);
-            this.shapeRn.render(this.gl, this.shapes[i]);
+            this.meshRn.render(this.gl, this.meshes[i]);
         }
 
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);

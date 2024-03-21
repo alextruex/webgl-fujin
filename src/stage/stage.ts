@@ -1,58 +1,57 @@
 import Game from '../game'
 import Player from './player';
-import Shape from '../video/shape';
+import Mesh from '../video/mesh';
 import Enemies from './enemies';
 
 class Stage{
     //player:Player;
-    shape:Shape;
+    plane:Mesh;
     game:Game;
-    //enemies:Enemies;
+    monkey:Mesh;
 
     constructor(game:Game){
         this.game = game;
-        this.shape = game.video.addShape(120,160,'monkey',0);
+        this.plane = game.video.addSprite(96,96,24,24,48,0,1);
+        this.monkey = game.video.addMesh(120,160,'monkey',0);
     }
 
     update(){
 
-        this.shape.ortho = false;
-
         if(this.game.input.poll('ArrowLeft')){
-            this.shape.x -= 1;
+            this.plane.x -= 2;
         }
         if(this.game.input.poll('ArrowRight')){
-            this.shape.x += 1;
+            this.plane.x += 2;
         }
         if(this.game.input.poll('ArrowUp')){
-            this.shape.y -= 1;
+            this.plane.y -= 2;
         }
         if(this.game.input.poll('ArrowDown')){
-            this.shape.y += 1;
+            this.plane.y += 2;
         }
         if(this.game.input.poll('C')){
-            this.shape.z -= 1;
+            this.plane.z -= 1;
         }
         if(this.game.input.poll('Z')){
-            this.shape.z += 1;
+            this.plane.z += 1;
         }
         if(this.game.input.poll('W')){
-            this.shape.rotX -= 1;
+            this.monkey.rotX -= 2;
         }
         if(this.game.input.poll('S')){
-            this.shape.rotX += 1;
+            this.monkey.rotX += 2;
         }
         if(this.game.input.poll('Q')){
-            this.shape.rotZ -= 1;
+            this.monkey.rotZ -= 2;
         }
         if(this.game.input.poll('E')){
-            this.shape.rotZ += 1;
+            this.monkey.rotZ += 2;
         }
         if(this.game.input.poll('A')){
-            this.shape.rotY -= 1;
+            this.monkey.rotY -= 2;
         }
         if(this.game.input.poll('D')){
-            this.shape.rotY += 1;
+            this.monkey.rotY += 2;
         }
     }
 }

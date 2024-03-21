@@ -1,5 +1,5 @@
 import Game from '../game';
-import Shape from '../video/shape';
+import Shape from '../video/mesh';
 
 class enemies{
     //enemy1:Shape;

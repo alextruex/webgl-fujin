@@ -1,4 +1,4 @@
-import Shape from './shape';
+import Mesh from './mesh';
 import modelIndex from '../models/modelIndex';
 import { m3Multiply, m4Multiply } from '../math/matrix';
 
@@ -35,7 +35,6 @@ class MeshRenderer {
             'attribute vec4 a_pos;' +
             'attribute vec2 a_tex;' +
             'varying vec2 v_tex;' +
-            'varying vec2 v_uv;' +
             'void main(){' +
             'gl_Position = u_pos * a_pos;' +
             'v_tex = (u_tex * vec3(a_tex,1.0)).xy;' +
@@ -69,7 +68,6 @@ class MeshRenderer {
         // Load vertex buffer
         let data:Array<number> = [];
         let index = 0;
-        let scale = 32;
         this.buffStart = {};
         this.buffLength = {};
 
@@ -93,9 +91,9 @@ class MeshRenderer {
                     let vertex = face[vrt]; // Each vertex
                     let pos = vertex[0]-1;
                     let tex = vertex[1]-1;
-                    let x = verts[pos][0]*scale;
-                    let y = verts[pos][1]*scale;
-                    let z = verts[pos][2]*scale;
+                    let x = verts[pos][0];
+                    let y = verts[pos][1];
+                    let z = verts[pos][2];
                     let u = uv[tex][0];
                     let v = uv[tex][1];
                     data = data.concat([x,y,z,u,v]);
@@ -109,7 +107,6 @@ class MeshRenderer {
         this.buffer = <WebGLBuffer>gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
-
     }
 
     setProg(gl:WebGLRenderingContext) {
@@ -120,10 +117,10 @@ class MeshRenderer {
         gl.vertexAttribPointer(this.a_tex, 2, gl.FLOAT, false, 20, 12);
     }
 
-    render(gl:WebGLRenderingContext, shapes:Array<Shape>) {
-        // Render shapes
-        for (let i = 0; i < shapes.length; i++) {
-            let m = shapes[i];
+    render(gl:WebGLRenderingContext, meshes:Array<Mesh>) {
+        // Render Meshes
+        for (let i = 0; i < meshes.length; i++) {
+            let m = meshes[i];
             if (m.visible) {
                 let s = 0;
                 let c = 0;
@@ -135,7 +132,7 @@ class MeshRenderer {
                 let matrix = [
                     2/this.width,0,0,0,
                     0,2/this.height,0,0,
-                    0,0,2/this.depth,foc,
+                    0,0,-2/this.depth,-foc,
                     -1,1,0,1
                 ];
 
@@ -195,30 +192,12 @@ class MeshRenderer {
                     ])
                 }
 
-                // UV Matrix
+                // UV
                 let uvMatrix = [
-                    1,0,0,
-                    0,1,0,
-                    0,0,1
+                    m.scaleU,0,0,
+                    0,m.scaleV,0,
+                    m.u/this.textureSize,1-m.scaleV-m.v/this.textureSize,1
                 ];
-
-                // UV Offset
-                if(m.u || m.v){
-                    uvMatrix = m3Multiply(uvMatrix, [
-                        1,0,0,
-                        0,1,0,
-                        m.u/this.textureSize,m.v/this.textureSize,1
-                    ]);
-                }
-
-                // UV Scale
-                if(m.scaleU != 1 || m.scaleV != 1){
-                    uvMatrix = m3Multiply(uvMatrix, [
-                        m.scaleU,0,0,
-                        0,m.scaleV,0,
-                        0,0,1
-                    ]);
-                }
 
                 // Set matrix
                 gl.uniformMatrix4fv(this.u_pos, false, matrix);

@@ -38,7 +38,7 @@ class RetroRenderer {
             'gl_FragColor = vec4(color,1.0);' +
             '}');
         gl.compileShader(fShader);
-
+        
         // Load program
         this.prog = <WebGLProgram>gl.createProgram();
         gl.attachShader(this.prog, vShader);

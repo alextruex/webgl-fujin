@@ -1,4 +1,4 @@
-class Shape{
+class Mesh{
     model:string;
     texture:number;
     x:number;
@@ -38,4 +38,4 @@ class Shape{
     }
 }
 
-export default Shape;
+export default Mesh;
