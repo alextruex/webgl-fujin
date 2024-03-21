@@ -3,6 +3,17 @@ class Input{
     canvas:HTMLCanvasElement;
 
     constructor(canvas:HTMLCanvasElement){
+        document.body.style.touchAction = 'none';
+
+        document.addEventListener('touchstart', (e) => {
+            this.map['touch'] = 1;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            this.map['touch'] = 0;
+        });
+
+
         this.canvas = canvas;
         this.map = {
             mouseX:0,

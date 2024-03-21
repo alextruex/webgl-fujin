@@ -45,7 +45,7 @@ class Player{
         if(this.game.input.poll('ArrowRight')){
             if(t.h < 2) t.h += .5;
         }
-        if(this.game.input.poll('mouse1')){
+        if(this.game.input.poll('touch')){
             if(t.h < 2) t.h += .5;
         }
         if(this.game.input.poll('ArrowUp')){
