@@ -1,8 +1,8 @@
-import * as cube from './cube.obj';
-import * as sprite from './sprite.obj';
-import * as icosahedron from './icosahedron.obj';
-import * as arch from './arch.obj';
-import * as monkey from './monkey.obj';
+import cube from './cube.obj';
+import sprite from './sprite.obj';
+import icosahedron from './icosahedron.obj';
+import arch from './arch.obj';
+import monkey from './monkey.obj';
 
 let modelIndex = {
     'cube':cube,

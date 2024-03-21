@@ -1,4 +1,4 @@
 declare module "*.obj" {
     const data:string
-    export {data}
+    export default data
 }
