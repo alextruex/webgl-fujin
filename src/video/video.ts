@@ -1,7 +1,9 @@
 import MeshRenderer from './meshrenderer';
 import RetroRenderer from './retrorenderer';
-import textureIndex from '../assets/textureIndex';
+import textureIndex from '../assets/textureindex';
 import Mesh from './mesh';
+
+import ModelCache from './modelcache';
 
 class Video {
     canvas:HTMLCanvasElement;
@@ -24,8 +26,8 @@ class Video {
 
     constructor() {
         // Set internal resolution
-        this.width = 240;
-        this.height = 420;
+        this.width = 420;
+        this.height = 240;
         this.textureSize = 256;
 
         // Load canvas

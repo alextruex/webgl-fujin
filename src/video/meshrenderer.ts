@@ -1,6 +1,7 @@
 import Mesh from './mesh';
-import modelIndex from '../assets/modelIndex';
+import modelIndex from '../assets/modelindex';
 import { m3Multiply, m4Multiply } from '../math/matrix';
+import ModelCache from './modelcache';
 
 class MeshRenderer {
     width:number;
@@ -8,6 +9,7 @@ class MeshRenderer {
     depth:number;
     textureSize:number;
     focalLength:number;
+    
 
     prog:WebGLProgram;
     buffer:WebGLBuffer;
@@ -64,6 +66,8 @@ class MeshRenderer {
         gl.enableVertexAttribArray(this.a_tex);
         this.u_pos = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_pos');
         this.u_tex = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_tex');
+
+        let m = new ModelCache(gl);
 
         // Load vertex buffer
         let data:Array<number> = [];
