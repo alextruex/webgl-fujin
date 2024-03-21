@@ -1,5 +1,5 @@
 import Mesh from './mesh';
-import modelIndex from '../models/modelIndex';
+import modelIndex from '../assets/modelIndex';
 import { m3Multiply, m4Multiply } from '../math/matrix';
 
 class MeshRenderer {

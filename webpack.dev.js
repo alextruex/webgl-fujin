@@ -4,7 +4,7 @@ module.exports = [
   {
     entry: "./src/main.ts",
     output: {
-      path: path.join(__dirname, "dist"),
+      path: path.join(__dirname, "docs"),
       filename: "main.js",
     },
     module: {
@@ -30,7 +30,7 @@ module.exports = [
     mode: 'development',
     devtool: 'inline-source-map',
     devServer: {
-      static: './dist',
+      static: './docs',
     },
   }
 ];

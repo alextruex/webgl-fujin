@@ -1,16 +1,16 @@
 import Game from '../game';
-import Shape from '../video/mesh';
+import Mesh from '../video/mesh';
 
 class Player{
     game:Game;
-    shape:Shape;
 
+    ship:Mesh;
     v:number = 0;
     h:number = 0;
-    x:number = 0;
-    y:number = 0;
+    x:number = 160;
+    y:number = 240;
     frame = 0;
-    bullets:Array<Shape>;
+    bullets:Array<Mesh>;
     bullet = 0;
     cooldown = 0;
 
@@ -19,11 +19,11 @@ class Player{
         this.x = 120;
         this.y = 240;
         this.bullets = [];
-        this.shape = game.video.addMesh(this.x,this.y,'plane',1);
+        this.ship = game.video.addSprite(this.x,this.y,24,24,0,0,1);
     }
 
     update(){
-        let m = this.shape;
+        let m = this.ship;
         let t = this;
 
         this.frame += .5;
@@ -34,6 +34,10 @@ class Player{
         if(t.v > 0) t.v -= .25;
         if(t.v < 0) t.v += .25;
 
+        m.x = Math.round(m.x += t.h);
+        m.y = Math.round(m.y += t.v);
+        
+        this.ship.u = Math.round(t.h) * 24 + 48;
 
         if(this.game.input.poll('ArrowLeft')){
             if(t.h > -2) t.h -= .5;
@@ -61,6 +65,8 @@ class Player{
         for(let i = 0; i < this.bullets.length; i++){
             this.bullets[i].y -= 6;
         }
+
+
 
 
     }

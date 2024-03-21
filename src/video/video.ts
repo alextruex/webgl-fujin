@@ -1,12 +1,7 @@
 import MeshRenderer from './meshrenderer';
 import RetroRenderer from './retrorenderer';
+import textureIndex from '../assets/textureIndex';
 import Mesh from './mesh';
-
-let textureIndex:Array<string> = [
-    '00_test.png',
-    '01_player.png',
-    '02_enemies.png'
-]
 
 class Video {
     canvas:HTMLCanvasElement;
@@ -131,6 +126,7 @@ class Video {
 
         this.meshRn.setProg(this.gl);
         for(let i = 0; i < this.textures.length; i++){
+            // if HUD layer, then clear depth buffer
             this.gl.bindTexture(this.gl.TEXTURE_2D,this.textures[i]);
             this.meshRn.render(this.gl, this.meshes[i]);
         }
