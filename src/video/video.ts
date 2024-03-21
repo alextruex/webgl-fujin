@@ -25,7 +25,7 @@ class Video {
     constructor() {
         // Set internal resolution
         this.width = 240;
-        this.height = 320;
+        this.height = 420;
         this.textureSize = 256;
 
         // Load canvas
@@ -46,7 +46,10 @@ class Video {
         this.canvas.style.maxWidth = '100vw';
         this.canvas.style.imageRendering = 'optimizeLegibility';
         document.body.style.margin = '0px';
-        document.body.style.backgroundColor = '#333333';        
+        document.body.style.backgroundColor = '#333333';
+
+        // Disable touch
+        document.body.style.touchAction = 'none';
 
         // Set context
         this.gl = <WebGLRenderingContext>this.canvas.getContext('experimental-webgl',{alpha:false});
