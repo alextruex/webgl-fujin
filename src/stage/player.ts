@@ -14,15 +14,30 @@ class Player{
     bullet = 0;
     cooldown = 0;
 
+    mesh1:Mesh;
+    mesh2:Mesh;
+    mesh3:Mesh;
+
+
     constructor(game:Game){
         this.game = game;
         this.x = 120;
         this.y = 240;
         this.bullets = [];
         this.ship = game.video.addSprite(this.x,this.y,24,24,0,0,1);
+
+        this.mesh1 = game.video.addMesh(64,64,0,1);
+        this.mesh2 = game.video.addMesh(128,64,4,1);
+        this.mesh3 = game.video.addMesh(90,64,3,1);
     }
 
     update(){
+
+
+        this.mesh1.rotZ +=1;
+        this.mesh2.rotY +=1;
+        this.mesh3.rotZ +=1;
+
         let m = this.ship;
         let t = this;
 

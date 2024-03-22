@@ -3,7 +3,6 @@ class RetroRenderer {
     height:number;
 
     prog:WebGLProgram;
-    buffer:WebGLBuffer;
     a_pos:number;
     u_res:WebGLUniformLocation;
 
@@ -46,12 +45,9 @@ class RetroRenderer {
         gl.linkProgram(this.prog);
         
         // Load vertex buffer
-        this.buffer = <WebGLBuffer>gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0]), gl.STATIC_DRAW);
         this.a_pos = gl.getAttribLocation(this.prog,'a_pos');
         gl.enableVertexAttribArray(this.a_pos);
-        gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 0, 0);
+        gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 20, 0);
 
         this.u_res = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_res');
 
@@ -59,16 +55,18 @@ class RetroRenderer {
 
     setProg(gl:WebGLRenderingContext){
         gl.useProgram(this.prog);
-        gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
+    }
+
+    setAttr(gl:WebGLRenderingContext){
         gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 0, 0);
     }
     
-    render(gl:WebGLRenderingContext){
+    render(gl:WebGLRenderingContext,start:number,count:number){
         // Set uniforms
         gl.uniform2f(this.u_res, this.width, this.height)
 
         // Draw
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.drawArrays(gl.TRIANGLES, start, count);
     }
 }
 

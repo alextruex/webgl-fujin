@@ -1,5 +1,5 @@
 class Mesh{
-    model:string;
+    model:number;
     texture:number;
     x:number;
     y:number;
@@ -17,7 +17,7 @@ class Mesh{
     visible:boolean;
     ortho:boolean;
 
-    constructor(x:number,y:number,model:string,texture:number){
+    constructor(x:number,y:number,model:number,texture:number){
         this.model = model;
         this.texture = texture;
         this.x = x;

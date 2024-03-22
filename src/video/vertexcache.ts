@@ -1,18 +1,40 @@
 import mdl from "../assets/mdl";
 
-class ModelCache{
-    buffers:Record<string,WebGLBuffer>;
+class VertexCache{
+    buffer:WebGLBuffer;
+    buffData:Array<Array<number>>;
+    buffIndex:Array<number>;
     modelsIn:number;
     modelsOut:number;
+    ready:boolean;
 
     constructor(gl:WebGLRenderingContext){
-        this.buffers = {};
+        this.buffer = <WebGLBuffer>gl.createBuffer();
+        this.buffData = [[]];
+        this.buffIndex = [];
         this.modelsIn = mdl.length;
         this.modelsOut = 0;
+        this.ready = false;
 
-        for(let m in mdl){
+        // Fallback
+        for(let i = 0; i < mdl.length; i++){
+            this.buffData[i] = [
+                1.0,-1.0,0.0,1.0,0.0,
+                -1.0,1.0,0.0,0.0,1.0,
+                -1.0,-1.0,0.0,0.0,0.0,
+                1.0,-1.0,0.0,1.0,0.0,
+                1.0,1.0,0.0,1.0,1.0,
+                -1.0,1.0,0.0,0.0,1.0,
+                ];;
+            this.buffIndex[i] = 0;
+        }
+        this.loadBuffer(gl);
+        
+
+        // Load Textures
+        for(let i = 0; i < mdl.length; i++){
             let req = new XMLHttpRequest();
-            req.open('GET','mdl/' + mdl[m]);
+            req.open('GET','mdl/' + mdl[i]);
             req.send();
             req.onreadystatechange = (e) => {
                 if(req.readyState == 4){
@@ -42,17 +64,26 @@ class ModelCache{
                             data.push(uv[tex][1]);
                         }
                     }
-                    this.buffers[mdl[m]] = <WebGLBuffer> gl.createBuffer();
-                    gl.bindBuffer(gl.ARRAY_BUFFER,this.buffers[mdl[m]]);
-                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+                    
+                    this.buffData[i] = data;
                     this.modelsOut++;
-                    console.log(mdl[m]);
-                    console.log(this.modelsOut);
+
+                    if(this.modelsIn == this.modelsOut){
+                        this.loadBuffer(gl);
+                    }
                 }
-  
             }
         }
     }
+
+    loadBuffer(gl:WebGLRenderingContext){
+        let data:Array<number> = [];
+        for(let i = 0; i < this.buffData.length; i++){
+            data = data.concat(this.buffData[i]);
+        }
+        gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+    }
 }
 
-export default ModelCache;
+export default VertexCache;
