@@ -3,34 +3,35 @@ import mdl from "../assets/mdl";
 class VertexCache{
     buffer:WebGLBuffer;
     buffData:Array<Array<number>>;
-    buffIndex:Array<number>;
+    buffStart:Array<number>;
+    buffCount:Array<number>;
     modelsIn:number;
     modelsOut:number;
     ready:boolean;
 
     constructor(gl:WebGLRenderingContext){
         this.buffer = <WebGLBuffer>gl.createBuffer();
-        this.buffData = [[]];
-        this.buffIndex = [];
+        this.buffData = [];
+        this.buffStart = [];
+        this.buffCount = [];
         this.modelsIn = mdl.length;
         this.modelsOut = 0;
         this.ready = false;
 
         // Fallback
         for(let i = 0; i < mdl.length; i++){
-            this.buffData[i] = [
-                1.0,-1.0,0.0,1.0,0.0,
-                -1.0,1.0,0.0,0.0,1.0,
-                -1.0,-1.0,0.0,0.0,0.0,
-                1.0,-1.0,0.0,1.0,0.0,
-                1.0,1.0,0.0,1.0,1.0,
-                -1.0,1.0,0.0,0.0,1.0,
-                ];;
-            this.buffIndex[i] = 0;
+            this.buffData.push([
+                32.0,-32.0,0.0,1.0,0.0,
+                -32.0,32.0,0.0,0.0,1.0,
+                -32.0,-32.0,0.0,0.0,0.0,
+                32.0,-32.0,0.0,1.0,0.0,
+                32.0,32.0,0.0,1.0,1.0,
+                -32.0,32.0,0.0,0.0,1.0,
+                ]);
+            this.buffStart.push(0);
         }
-        this.loadBuffer(gl);
-        
-
+        this.compileBuffer(gl);
+    
         // Load Textures
         for(let i = 0; i < mdl.length; i++){
             let req = new XMLHttpRequest();
@@ -69,17 +70,20 @@ class VertexCache{
                     this.modelsOut++;
 
                     if(this.modelsIn == this.modelsOut){
-                        this.loadBuffer(gl);
+                        this.compileBuffer(gl);
                     }
                 }
             }
         }
     }
+    
 
-    loadBuffer(gl:WebGLRenderingContext){
+    compileBuffer(gl:WebGLRenderingContext){
         let data:Array<number> = [];
-        for(let i = 0; i < this.buffData.length; i++){
+        for(let i = 0; i < mdl.length; i++){
+            this.buffStart[i] = data.length / 5;
             data = data.concat(this.buffData[i]);
+            this.buffCount[i] = this.buffData[i].length / 5;
         }
         gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);

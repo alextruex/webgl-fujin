@@ -77,7 +77,7 @@ class MeshRenderer {
         gl.vertexAttribPointer(this.a_tex, 2, gl.FLOAT, false, 20, 12);
     }
 
-    render(gl:WebGLRenderingContext, m:Mesh, buffStart:number, buffLength:number) {
+    render(gl:WebGLRenderingContext, m:Mesh, start, count) {
 
         // Render Mesh
         if (m.visible) {
@@ -163,7 +163,7 @@ class MeshRenderer {
             gl.uniformMatrix3fv(this.u_tex, false, uvMatrix);
 
             // Draw
-            gl.drawArrays(gl.TRIANGLES, buffStart, buffLength);
+            gl.drawArrays(gl.TRIANGLES, start, count);
         }
     }
 }

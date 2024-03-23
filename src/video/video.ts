@@ -33,8 +33,8 @@ class Video {
         // Load canvas
         this.canvas = <HTMLCanvasElement>document.createElement('canvas');
         this.canvas.id = 'glCanvas';
-        this.canvas.width = this.width * 2;
-        this.canvas.height = this.height * 2;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
         document.body.appendChild(this.canvas);
         this.canvas.style.position = 'absolute';
         this.canvas.style.margin = 'auto';
@@ -68,9 +68,9 @@ class Video {
         this.vertexCache = new VertexCache(this.gl);
         this.textureCache = new TextureCache(this.gl);
 
-        this.meshes = [[]];
+        this.meshes = [];
         for(let i = 0; i < tex.length; i++){
-            this.meshes[i] = [];
+            this.meshes.push([]);
         }
 
         // Set fb color
@@ -118,18 +118,28 @@ class Video {
 
     render() {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER,null);
-        this.gl.viewport(0, 0, this.width*2, this.height*2);
+        this.gl.viewport(0, 0, this.width, this.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.meshRn.setProg(this.gl);
+        /*
         for(let i = 0; i < this.meshes.length; i++){
-            this.gl.bindTexture(this.gl.TEXTURE_2D,this.textureCache.textures[0])
+            this.gl.bindTexture(this.gl.TEXTURE_2D,this.textureCache.textures[i])
             for(let j = 0; j < this.meshes[i].length; j++){
+                
                 let m = this.meshes[i][j];
-                let start = this.vertexCache.buffIndex[m.model];
-                let count = this.vertexCache.buffData[m.model].length/5;
-                this.meshRn.render(this.gl,m,start,count);
+                */
+                this.gl.bindTexture(this.gl.TEXTURE_2D,this.textureCache.textures[0]);
+                this.meshRn.render(this.gl,this.meshes[0][0],this.vertexCache.buffStart[1],this.vertexCache.buffCount[1]);
+                /*
+                let start = this.vertexCache.buffIndex[1];
+                console.log(this.vertexCache.buffData[1].length/5);
+                let count = this.vertexCache.buffData[1].length/5;
+                console.log(count);
+                this.meshRn.render(this.gl,this.meshes[0][0],start,4);
+                /*
             }
         }
+        */
         /*
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
