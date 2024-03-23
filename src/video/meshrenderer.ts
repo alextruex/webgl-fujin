@@ -1,9 +1,7 @@
-import Mesh from './mesh';
-import modelIndex from '../assets/modelindex';
-import { m3Multiply, m4Multiply } from '../math/matrix';
-import ModelCache from './vertexcache';
+import Mesh from '../common/mesh';
 import TextureCache from './texturecache';
-import tex from '../assets/tex';
+import VertexCache from './vertexcache';
+import { m3Multiply, m4Multiply } from '../common/matrix';
 
 class MeshRenderer {
     width: number;
@@ -72,98 +70,102 @@ class MeshRenderer {
         gl.useProgram(this.prog);
     }
 
-    setAttr(gl: WebGLRenderingContext){
+    setAttr(gl: WebGLRenderingContext) {
         gl.vertexAttribPointer(this.a_pos, 3, gl.FLOAT, false, 20, 0);
         gl.vertexAttribPointer(this.a_tex, 2, gl.FLOAT, false, 20, 12);
     }
 
-    render(gl:WebGLRenderingContext, m:Mesh, start, count) {
+    render(gl: WebGLRenderingContext, meshes: Array<Array<Mesh>>, textureCache: TextureCache, vertexCache: VertexCache) {
+        for (let i = 0; i < meshes.length; i++) {
+            gl.bindTexture(gl.TEXTURE_2D, textureCache.textures[i]);
+            for (let j = 0; j < meshes[i].length; j++) {
+                let m = meshes[i][j];
+                if (m.visible) {
+                    let s = 0;
+                    let c = 0;
+                    //let foc = this.focalLength;
+                    let foc = .01;
+                    if (m.ortho) foc = 0;
 
-        // Render Mesh
-        if (m.visible) {
-            let s = 0;
-            let c = 0;
-            //let foc = this.focalLength;
-            let foc = .01;
-            if (m.ortho) foc = 0;
+                    // Projection
+                    let matrix = [
+                        2 / this.width, 0, 0, 0,
+                        0, 2 / this.height, 0, 0,
+                        0, 0, -2 / this.depth, -foc,
+                        -1, 1, 0, 1
+                    ];
 
-            // Projection
-            let matrix = [
-                2 / this.width, 0, 0, 0,
-                0, 2 / this.height, 0, 0,
-                0, 0, -2 / this.depth, -foc,
-                -1, 1, 0, 1
-            ];
+                    // Translation
+                    if (m.x || m.y || m.z) {
+                        matrix = m4Multiply(matrix, [
+                            1, 0, 0, 0,
+                            0, 1, 0, 0,
+                            0, 0, 1, 0,
+                            m.x, -m.y, m.z, 1
+                        ]);
+                    }
 
-            // Translation
-            if (m.x || m.y || m.z) {
-                matrix = m4Multiply(matrix, [
-                    1, 0, 0, 0,
-                    0, 1, 0, 0,
-                    0, 0, 1, 0,
-                    m.x, -m.y, m.z, 1
-                ]);
+                    // X Rotation
+                    if (m.rotX) {
+                        c = Math.cos(m.rotX * Math.PI / 180);
+                        s = Math.sin(m.rotX * Math.PI / 180);
+                        matrix = m4Multiply(matrix, [
+                            1, 0, 0, 0,
+                            0, c, s, 0,
+                            0, -s, c, 0,
+                            0, 0, 0, 1
+                        ]);
+                    }
+
+                    // Y Rotation
+                    if (m.rotY) {
+                        c = Math.cos(m.rotY * Math.PI / 180);
+                        s = Math.sin(m.rotY * Math.PI / 180);
+                        matrix = m4Multiply(matrix, [
+                            c, 0, -s, 0,
+                            0, 1, 0, 0,
+                            s, 0, c, 0,
+                            0, 0, 0, 1
+                        ]);
+                    }
+
+                    // Z Rotation
+                    if (m.rotZ) {
+                        c = Math.cos(m.rotZ * Math.PI / 180);
+                        s = Math.sin(m.rotZ * Math.PI / 180);
+                        matrix = m4Multiply(matrix, [
+                            c, s, 0, 0,
+                            -s, c, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1
+                        ]);
+                    }
+
+                    // Scale
+                    if (m.scaleX != 1 || m.scaleY != 1 || m.scaleZ != 1) {
+                        matrix = m4Multiply(matrix, [
+                            m.scaleX, 0, 0, 0,
+                            0, m.scaleY, 0, 0,
+                            0, 0, m.scaleZ, 0,
+                            0, 0, 0, 1,
+                        ])
+                    }
+
+                    // UV
+                    let uvMatrix = [
+                        m.scaleU, 0, 0,
+                        0, m.scaleV, 0,
+                        m.u / this.textureSize, 1 - m.scaleV - m.v / this.textureSize, 1
+                    ];
+
+                    // Set matrix
+                    gl.uniformMatrix4fv(this.u_pos, false, matrix);
+                    gl.uniformMatrix3fv(this.u_tex, false, uvMatrix);
+
+                    // Draw
+                    gl.drawArrays(gl.TRIANGLES, vertexCache.start[m.model], vertexCache.count[m.model]);
+                }
             }
-
-            // X Rotation
-            if (m.rotX) {
-                c = Math.cos(m.rotX * Math.PI / 180);
-                s = Math.sin(m.rotX * Math.PI / 180);
-                matrix = m4Multiply(matrix, [
-                    1, 0, 0, 0,
-                    0, c, s, 0,
-                    0, -s, c, 0,
-                    0, 0, 0, 1
-                ]);
-            }
-
-            // Y Rotation
-            if (m.rotY) {
-                c = Math.cos(m.rotY * Math.PI / 180);
-                s = Math.sin(m.rotY * Math.PI / 180);
-                matrix = m4Multiply(matrix, [
-                    c, 0, -s, 0,
-                    0, 1, 0, 0,
-                    s, 0, c, 0,
-                    0, 0, 0, 1
-                ]);
-            }
-
-            // Z Rotation
-            if (m.rotZ) {
-                c = Math.cos(m.rotZ * Math.PI / 180);
-                s = Math.sin(m.rotZ * Math.PI / 180);
-                matrix = m4Multiply(matrix, [
-                    c, s, 0, 0,
-                    -s, c, 0, 0,
-                    0, 0, 1, 0,
-                    0, 0, 0, 1
-                ]);
-            }
-
-            // Scale
-            if (m.scaleX != 1 || m.scaleY != 1 || m.scaleZ != 1) {
-                matrix = m4Multiply(matrix, [
-                    m.scaleX, 0, 0, 0,
-                    0, m.scaleY, 0, 0,
-                    0, 0, m.scaleZ, 0,
-                    0, 0, 0, 1,
-                ])
-            }
-
-            // UV
-            let uvMatrix = [
-                m.scaleU, 0, 0,
-                0, m.scaleV, 0,
-                m.u / this.textureSize, 1 - m.scaleV - m.v / this.textureSize, 1
-            ];
-
-            // Set matrix
-            gl.uniformMatrix4fv(this.u_pos, false, matrix);
-            gl.uniformMatrix3fv(this.u_tex, false, uvMatrix);
-
-            // Draw
-            gl.drawArrays(gl.TRIANGLES, start, count);
         }
     }
 }

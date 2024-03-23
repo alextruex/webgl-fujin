@@ -3,8 +3,8 @@ import mdl from "../assets/mdl";
 class VertexCache{
     buffer:WebGLBuffer;
     buffData:Array<Array<number>>;
-    buffStart:Array<number>;
-    buffCount:Array<number>;
+    start:Array<number>;
+    count:Array<number>;
     modelsIn:number;
     modelsOut:number;
     ready:boolean;
@@ -12,8 +12,8 @@ class VertexCache{
     constructor(gl:WebGLRenderingContext){
         this.buffer = <WebGLBuffer>gl.createBuffer();
         this.buffData = [];
-        this.buffStart = [];
-        this.buffCount = [];
+        this.start = [];
+        this.count = [];
         this.modelsIn = mdl.length;
         this.modelsOut = 0;
         this.ready = false;
@@ -28,7 +28,7 @@ class VertexCache{
                 32.0,32.0,0.0,1.0,1.0,
                 -32.0,32.0,0.0,0.0,1.0,
                 ]);
-            this.buffStart.push(0);
+            this.start.push(0);
         }
         this.compileBuffer(gl);
     
@@ -81,9 +81,9 @@ class VertexCache{
     compileBuffer(gl:WebGLRenderingContext){
         let data:Array<number> = [];
         for(let i = 0; i < mdl.length; i++){
-            this.buffStart[i] = data.length / 5;
+            this.start[i] = data.length / 5;
             data = data.concat(this.buffData[i]);
-            this.buffCount[i] = this.buffData[i].length / 5;
+            this.count[i] = this.buffData[i].length / 5;
         }
         gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);

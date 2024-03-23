@@ -1,6 +1,6 @@
 import MeshRenderer from './meshrenderer';
 import RetroRenderer from './retrorenderer';
-import Mesh from './mesh';
+import Mesh from '../common/mesh';
 
 import tex from '../assets/tex';
 import mdl from '../assets/mdl';
@@ -121,25 +121,9 @@ class Video {
         this.gl.viewport(0, 0, this.width, this.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.meshRn.setProg(this.gl);
-        /*
-        for(let i = 0; i < this.meshes.length; i++){
-            this.gl.bindTexture(this.gl.TEXTURE_2D,this.textureCache.textures[i])
-            for(let j = 0; j < this.meshes[i].length; j++){
-                
-                let m = this.meshes[i][j];
-                */
-                this.gl.bindTexture(this.gl.TEXTURE_2D,this.textureCache.textures[0]);
-                this.meshRn.render(this.gl,this.meshes[0][0],this.vertexCache.buffStart[1],this.vertexCache.buffCount[1]);
-                /*
-                let start = this.vertexCache.buffIndex[1];
-                console.log(this.vertexCache.buffData[1].length/5);
-                let count = this.vertexCache.buffData[1].length/5;
-                console.log(count);
-                this.meshRn.render(this.gl,this.meshes[0][0],start,4);
-                /*
-            }
-        }
-        */
+        this.meshRn.render(this.gl,this.meshes,this.textureCache,this.vertexCache);
+
+        
         /*
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);

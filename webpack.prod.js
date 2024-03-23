@@ -13,10 +13,6 @@ module.exports = [
           test: /\.ts$/,
           exclude: /node_modules/,
           loader: "babel-loader",
-        },
-        {
-          test: /\.obj$/,
-          type: 'asset/source',
         }
       ],
     },

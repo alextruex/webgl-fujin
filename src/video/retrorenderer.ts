@@ -50,7 +50,6 @@ class RetroRenderer {
         gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 20, 0);
 
         this.u_res = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_res');
-
     }
 
     setProg(gl:WebGLRenderingContext){

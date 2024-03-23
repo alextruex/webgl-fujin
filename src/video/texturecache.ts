@@ -33,7 +33,6 @@ class TextureCache {
             
         }
         
-        /*
         for (let i = 0; i < tex.length; i++) {
             let image = new Image();
             image.src = 'img/' + tex[i];
@@ -45,12 +44,6 @@ class TextureCache {
                 this.texturesOut++;
             });
         }
-        */
-        
-    }
-
-    setTexture(gl:WebGL2RenderingContext,texIndex:number){
-        gl.bindTexture(gl.TEXTURE_2D,this.textures[texIndex]);
     }
 }
 
