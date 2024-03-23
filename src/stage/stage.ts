@@ -5,26 +5,27 @@ import Enemies from './enemies';
 class Stage{
     game:Game;
 
-    mesh1:Mesh;
-    mesh2:Mesh;
+    meshes:Array<Mesh>;
 
     constructor(game:Game){
         this.game = game;
 
-        this.mesh1 = this.game.video.addMesh(120,120,4,0);
-        this.mesh2 = this.game.video.addMesh(120,240,2,0);
-
-
-        this.mesh1.ortho = false;
-
+        this.meshes = [];
+        for(let i = 0; i < 256; i++){
+            this.meshes.push(game.video.addMesh(Math.random()*240,Math.random()*320,2,0));
+            this.meshes[i].rotY = Math.random()*360;
+            this.meshes[i].scaleX = .3;
+            this.meshes[i].scaleY = .3;
+            this.meshes[i].scaleZ = .3;
+            this.meshes[i].ortho = false;
+        }
     }
 
     update(){
-        this.mesh1.rotX += 1;
-        this.mesh1.rotY += 1;
-        //this.mesh1.rotX += 1;
-        this.mesh2.rotY += 1;
-        this.mesh2.rotZ += 1;
+        for(let i = 0; i < 256; i++){
+            this.meshes[i].rotZ += 1;
+            this.meshes[i].rotY += 1;
+        }
     }
 }
 

@@ -1,19 +1,25 @@
-import tex from '../assets/tex';
+const TEX = [
+    '00_test.png',
+    '01_player.png',
+    '02_enemies.png'
+]
+
+const TEX_SIZE = 256;
 
 class TextureCache {
     textures: Array<WebGLTexture>;
-    textureSize: number;
-    texturesIn: number;
-    texturesOut: number;
+    txSize: number;
+    txIn: number;
+    txOut: number;
 
     constructor(gl: WebGLRenderingContext) {
         this.textures = [];
-        this.textureSize = 256;
-        this.texturesIn = tex.length;
-        this.texturesOut = 0;
+        this.txSize = TEX_SIZE;
+        this.txIn = TEX.length;
+        this.txOut = 0;
 
         // Fallback
-        for (let i = 0; i < tex.length; i++) {
+        for (let i = 0; i < TEX.length; i++) {
             this.textures[i] = <WebGLTexture>gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, this.textures[i])
             let pixels:Array<number> = [];
@@ -33,15 +39,15 @@ class TextureCache {
             
         }
         
-        for (let i = 0; i < tex.length; i++) {
+        for (let i = 0; i < TEX.length; i++) {
             let image = new Image();
-            image.src = 'img/' + tex[i];
+            image.src = 'tex/' + TEX[i];
             image.addEventListener('load', () => {
                 gl.bindTexture(gl.TEXTURE_2D, this.textures[i]);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
                 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
                 gl.generateMipmap(gl.TEXTURE_2D);
-                this.texturesOut++;
+                this.txOut++;
             });
         }
     }

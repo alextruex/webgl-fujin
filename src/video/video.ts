@@ -1,9 +1,7 @@
 import MeshRenderer from './meshrenderer';
 import RetroRenderer from './retrorenderer';
-import Mesh from '../common/mesh';
 
-import tex from '../assets/tex';
-import mdl from '../assets/mdl';
+import Mesh from '../common/mesh';
 
 import VertexCache from './vertexcache';
 import TextureCache from './texturecache';
@@ -16,8 +14,8 @@ class Video {
 
     meshRn: MeshRenderer;
     retroRn: RetroRenderer;
-    textureCache: TextureCache;
-    vertexCache: VertexCache;
+    tCache: TextureCache;
+    vCache: VertexCache;
     meshes: Array<Array<Mesh>>;
 
     fb: WebGLFramebuffer;
@@ -33,8 +31,8 @@ class Video {
         // Load canvas
         this.canvas = <HTMLCanvasElement>document.createElement('canvas');
         this.canvas.id = 'glCanvas';
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
+        this.canvas.width = this.width*2;
+        this.canvas.height = this.height*2;
         document.body.appendChild(this.canvas);
         this.canvas.style.position = 'absolute';
         this.canvas.style.margin = 'auto';
@@ -65,11 +63,11 @@ class Video {
         this.retro = true;
 
         // Load resources
-        this.vertexCache = new VertexCache(this.gl);
-        this.textureCache = new TextureCache(this.gl);
+        this.vCache = new VertexCache(this.gl);
+        this.tCache = new TextureCache(this.gl);
 
         this.meshes = [];
-        for(let i = 0; i < tex.length; i++){
+        for(let i = 0; i < this.tCache.textures.length; i++){
             this.meshes.push([]);
         }
 
@@ -94,7 +92,7 @@ class Video {
         this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, this.fbDepth);
 
         // Prepare to render
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER,this.vertexCache.buffer);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER,this.vCache.buffer);
         this.meshRn.setAttr(this.gl);
     }
 
@@ -108,8 +106,8 @@ class Video {
         let mesh = new Mesh(x,y,0,texture);
         mesh.scaleX = width;
         mesh.scaleY = height;
-        mesh.scaleU = width/this.textureCache.textureSize;
-        mesh.scaleV = height/this.textureCache.textureSize;
+        mesh.scaleU = width/this.tCache.txSize;
+        mesh.scaleV = height/this.tCache.txSize;
         mesh.u = u;
         mesh.v = v;
         this.meshes[texture].push(mesh);
@@ -117,21 +115,19 @@ class Video {
     }
 
     render() {
-        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER,null);
+        // Mesh renderer
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER,this.fb);
         this.gl.viewport(0, 0, this.width, this.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.meshRn.setProg(this.gl);
-        this.meshRn.render(this.gl,this.meshes,this.textureCache,this.vertexCache);
+        this.meshRn.render(this.gl,this.meshes,this.tCache,this.vCache);
 
-        
-        /*
+        // Retro filter
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.fbColor);
         this.retroRn.setProg(this.gl);
-        this.retroRn.render(this.gl,0,6);
-        */
-        
+        this.retroRn.render(this.gl,this.vCache);
     }
 }
 

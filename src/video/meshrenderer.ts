@@ -75,9 +75,9 @@ class MeshRenderer {
         gl.vertexAttribPointer(this.a_tex, 2, gl.FLOAT, false, 20, 12);
     }
 
-    render(gl: WebGLRenderingContext, meshes: Array<Array<Mesh>>, textureCache: TextureCache, vertexCache: VertexCache) {
+    render(gl: WebGLRenderingContext, meshes: Array<Array<Mesh>>, tCache: TextureCache, vCache: VertexCache) {
         for (let i = 0; i < meshes.length; i++) {
-            gl.bindTexture(gl.TEXTURE_2D, textureCache.textures[i]);
+            gl.bindTexture(gl.TEXTURE_2D, tCache.textures[i]);
             for (let j = 0; j < meshes[i].length; j++) {
                 let m = meshes[i][j];
                 if (m.visible) {
@@ -163,7 +163,7 @@ class MeshRenderer {
                     gl.uniformMatrix3fv(this.u_tex, false, uvMatrix);
 
                     // Draw
-                    gl.drawArrays(gl.TRIANGLES, vertexCache.start[m.model], vertexCache.count[m.model]);
+                    gl.drawArrays(gl.TRIANGLES, vCache.start[m.model], vCache.count[m.model]);
                 }
             }
         }

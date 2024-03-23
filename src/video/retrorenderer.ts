@@ -1,3 +1,5 @@
+import VertexCache from "./vertexcache";
+
 class RetroRenderer {
     width:number;
     height:number;
@@ -60,12 +62,12 @@ class RetroRenderer {
         gl.vertexAttribPointer(this.a_pos, 2, gl.FLOAT, false, 0, 0);
     }
     
-    render(gl:WebGLRenderingContext,start:number,count:number){
+    render(gl:WebGLRenderingContext,vertexCache:VertexCache){
         // Set uniforms
         gl.uniform2f(this.u_res, this.width, this.height)
 
         // Draw
-        gl.drawArrays(gl.TRIANGLES, start, count);
+        gl.drawArrays(gl.TRIANGLES, vertexCache.start[0], vertexCache.count[0]);
     }
 }
 
