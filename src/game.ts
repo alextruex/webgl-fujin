@@ -2,6 +2,7 @@ import Audio from './audio/audio';
 import Input from './input/input';
 import Video from './video/video';
 import Stage from './stage/stage';
+import LoadingScreen from './stage/loadingscreen';
 
 class Game{
     audio:Audio;
@@ -14,13 +15,13 @@ class Game{
         this.audio = new Audio();
         this.video = new Video();
         this.input = new Input(this.video.canvas);
-        this.stage = new Stage(this.video,this.input);
+        this.stage = new LoadingScreen(this);
         this.state = {screen:'loading'};
         requestAnimationFrame(() => this.main());
     }
 
     main(){
-        this.stage.update(this.video,this.input);
+        this.stage.update(this);
         this.video.render();
         requestAnimationFrame(() => this.main());
     }
