@@ -8,17 +8,19 @@ class Game{
     input:Input;
     video:Video;
     stage:Stage;
+    state:Record<string,string>;
     
     constructor(){
         this.audio = new Audio();
         this.video = new Video();
         this.input = new Input(this.video.canvas);
-        this.stage = new Stage(this);
+        this.stage = new Stage(this.video,this.input);
+        this.state = {screen:'loading'};
         requestAnimationFrame(() => this.main());
     }
 
     main(){
-        this.stage.update();
+        this.stage.update(this.video,this.input);
         this.video.render();
         requestAnimationFrame(() => this.main());
     }

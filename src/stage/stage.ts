@@ -1,31 +1,34 @@
-import Game from '../game'
+import Video from '../video/video';
+import Input from '../input/input';
 import Mesh from '../common/mesh';
 import Enemies from './enemies';
 
+interface Stage{
+    
+}
+
 class Stage{
-    game:Game;
+    meshes:Record<string,Mesh>;
 
-    meshes:Array<Mesh>;
+    constructor(video:Video,input:Input){
+        this.meshes = {
+            'frametop':video.addSprite(120,200,1,1,0,0,0),
+            'framebottom':video.addSprite(120,220,1,1,0,0,0),
+            'framebar':video.addSprite(120,210,1,1,0,0,0),
+        };
+        let m = this.meshes;
 
-    constructor(game:Game){
-        this.game = game;
-
-        this.meshes = [];
-        for(let i = 0; i < 256; i++){
-            this.meshes.push(game.video.addMesh(Math.random()*240,Math.random()*320,2,0));
-            this.meshes[i].rotY = Math.random()*360;
-            this.meshes[i].scaleX = .3;
-            this.meshes[i].scaleY = .3;
-            this.meshes[i].scaleZ = .3;
-            this.meshes[i].ortho = false;
-        }
+        m.frametop.scaleX = 64;
+        m.frametop.scaleY = 1;
+        m.framebottom.scaleX = 64;
+        m.framebottom.scaleY = 1;
+        m.framebar.scaleY = 8;
     }
 
-    update(){
-        for(let i = 0; i < 256; i++){
-            this.meshes[i].rotZ += 1;
-            this.meshes[i].rotY += 1;
-        }
+    update(video:Video,input:Input){
+        let load = video.getProgress()[0]*32 + video.getProgress()[1]*32;
+        this.meshes.framebar.x = 56 + load;
+        this.meshes.framebar.scaleX = load;
     }
 }
 

@@ -16,6 +16,7 @@ class MeshRenderer {
     a_tex: number;
     u_pos: WebGLUniformLocation;
     u_tex: WebGLUniformLocation;
+    u_alp: WebGLUniformLocation;
 
     constructor(width: number, height: number, gl: WebGLRenderingContext) {
         // Set renderer resolution
@@ -45,8 +46,10 @@ class MeshRenderer {
             'precision mediump float;' +
             'varying vec2 v_tex;' +
             'uniform sampler2D u_texture;' +
+            'uniform float u_alp;' +
             'void main() {' +
             'vec4 color = texture2D(u_texture, vec2(v_tex.x, v_tex.y));' +
+            'color.w = color.w * u_alp;' +
             'gl_FragColor = color;' +
             '}');
         gl.compileShader(fShader);
@@ -64,6 +67,7 @@ class MeshRenderer {
         gl.enableVertexAttribArray(this.a_tex);
         this.u_pos = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_pos');
         this.u_tex = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_tex');
+        this.u_alp = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_alp');
     }
 
     setProg(gl: WebGLRenderingContext) {
@@ -161,6 +165,7 @@ class MeshRenderer {
                     // Set matrix
                     gl.uniformMatrix4fv(this.u_pos, false, matrix);
                     gl.uniformMatrix3fv(this.u_tex, false, uvMatrix);
+                    gl.uniform1f(this.u_alp, m.alpha);
 
                     // Draw
                     gl.drawArrays(gl.TRIANGLES, vCache.start[m.model], vCache.count[m.model]);

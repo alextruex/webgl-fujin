@@ -1,6 +1,7 @@
 class Mesh{
     model:number;
     texture:number;
+    alpha:number;
     x:number;
     y:number;
     z:number;
@@ -20,6 +21,7 @@ class Mesh{
     constructor(x:number,y:number,model:number,texture:number){
         this.model = model;
         this.texture = texture;
+        this.alpha = 1;
         this.x = x;
         this.y = y;
         this.z = 0;

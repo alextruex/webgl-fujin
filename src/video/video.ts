@@ -26,7 +26,7 @@ class Video {
     constructor() {
         // Set internal resolution
         this.width = 240;
-        this.height = 320;
+        this.height = 420;
 
         // Load canvas
         this.canvas = <HTMLCanvasElement>document.createElement('canvas');
@@ -96,6 +96,10 @@ class Video {
         this.meshRn.setAttr(this.gl);
     }
 
+    getProgress(){
+        return ([this.vCache.out/this.vCache.in,this.tCache.out/this.tCache.in]);
+    }
+
     addMesh(x:number, y:number, model:number, texture:number) {
         let mesh = new Mesh(x,y,model,texture);
         this.meshes[texture].push(mesh);
@@ -115,6 +119,7 @@ class Video {
     }
 
     render() {
+        console.log(this.getProgress());
         // Mesh renderer
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER,this.fb);
         this.gl.viewport(0, 0, this.width, this.height);

@@ -2,10 +2,10 @@ const TEX_COUNT = 2;
 const TEX_SIZE = 256;
 
 class TextureCache {
-    textures: Array<WebGLTexture>;
-    txSize: number;
-    in: number;
-    out: number;
+    textures:Array<WebGLTexture>;
+    txSize:number;
+    in:number;
+    out:number;
 
     constructor(gl: WebGLRenderingContext) {
         this.textures = [];
