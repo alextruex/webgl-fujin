@@ -108,10 +108,10 @@ class Video {
 
     addSprite(x:number, y:number, width:number, height:number, u:number, v:number, texture:number){
         let mesh = new Mesh(x,y,0,texture);
-        mesh.scaleX = width;
-        mesh.scaleY = height;
-        mesh.scaleU = width/this.tCache.txSize;
-        mesh.scaleV = height/this.tCache.txSize;
+        mesh.scaleX = width/2;
+        mesh.scaleY = height/2;
+        mesh.scaleU = width/this.tCache.textureSize;
+        mesh.scaleV = -height/this.tCache.textureSize;
         mesh.u = u;
         mesh.v = v;
         this.meshes[texture].push(mesh);

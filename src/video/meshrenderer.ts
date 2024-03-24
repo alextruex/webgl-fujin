@@ -7,7 +7,6 @@ class MeshRenderer {
     width: number;
     height: number;
     depth: number;
-    textureSize: number;
     focalLength: number;
 
     prog: WebGLProgram;
@@ -16,15 +15,13 @@ class MeshRenderer {
     a_tex: number;
     u_pos: WebGLUniformLocation;
     u_tex: WebGLUniformLocation;
-    u_alp: WebGLUniformLocation;
 
     constructor(width: number, height: number, gl: WebGLRenderingContext) {
         // Set renderer resolution
         this.width = width;
         this.height = height;
         this.depth = height;
-        this.textureSize = 256;
-        this.focalLength = .05;
+        this.focalLength = .01;
 
         // Load vertex shader
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
@@ -46,10 +43,8 @@ class MeshRenderer {
             'precision mediump float;' +
             'varying vec2 v_tex;' +
             'uniform sampler2D u_texture;' +
-            'uniform float u_alp;' +
             'void main() {' +
             'vec4 color = texture2D(u_texture, vec2(v_tex.x, v_tex.y));' +
-            'color.w = color.w * u_alp;' +
             'gl_FragColor = color;' +
             '}');
         gl.compileShader(fShader);
@@ -67,7 +62,6 @@ class MeshRenderer {
         gl.enableVertexAttribArray(this.a_tex);
         this.u_pos = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_pos');
         this.u_tex = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_tex');
-        this.u_alp = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_alp');
     }
 
     setProg(gl: WebGLRenderingContext) {
@@ -88,7 +82,7 @@ class MeshRenderer {
                     let s = 0;
                     let c = 0;
                     //let foc = this.focalLength;
-                    let foc = .01;
+                    let foc = this.focalLength;
                     if (m.ortho) foc = 0;
 
                     // Projection
@@ -158,14 +152,13 @@ class MeshRenderer {
                     // UV
                     let uvMatrix = [
                         m.scaleU, 0, 0,
-                        0, m.scaleV, 0,
-                        m.u / this.textureSize, 1 - m.scaleV - m.v / this.textureSize, 1
+                        0, -m.scaleV, 0,
+                        m.u / tCache.textureSize, m.v / tCache.textureSize, 1
                     ];
 
                     // Set matrix
                     gl.uniformMatrix4fv(this.u_pos, false, matrix);
                     gl.uniformMatrix3fv(this.u_tex, false, uvMatrix);
-                    gl.uniform1f(this.u_alp, m.alpha);
 
                     // Draw
                     gl.drawArrays(gl.TRIANGLES, vCache.start[m.model], vCache.count[m.model]);
