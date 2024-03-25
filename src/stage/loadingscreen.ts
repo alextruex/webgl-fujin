@@ -31,7 +31,7 @@ class LoadingScreen implements Stage{
 
         if(v.getProgress()[0] == 1 && v.getProgress()[1] == 1){
             v.clear();
-            game.stage == new AttractScreen(game);
+            game.stage = new AttractScreen(game);
         }
     }
 }

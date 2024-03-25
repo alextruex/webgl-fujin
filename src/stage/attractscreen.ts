@@ -31,8 +31,8 @@ class AttractScreen implements Stage{
         }
 
         if(i.poll('ArrowRight')){
-            this.meshes.testmesh.u += 1;
-            this.meshes.ship.u += 1;
+
+            this.meshes.ship.x += 1;
         }
     }
 }
