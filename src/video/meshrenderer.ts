@@ -21,7 +21,7 @@ class MeshRenderer {
         this.width = width;
         this.height = height;
         this.depth = height;
-        this.focalLength = .01;
+        this.focalLength = .001;
 
         // Load vertex shader
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
