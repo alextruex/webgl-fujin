@@ -1,4 +1,4 @@
-const MODEL_COUNT = 5;
+const MODEL_COUNT = 6;
 
 class VertexCache {
     buffer: WebGLBuffer;

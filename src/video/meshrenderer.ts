@@ -44,7 +44,8 @@ class MeshRenderer {
             'varying vec2 v_tex;' +
             'uniform sampler2D u_texture;' +
             'void main() {' +
-            'vec4 color = texture2D(u_texture, vec2(v_tex.x, v_tex.y));' +
+            'vec4 color = texture2D(u_texture, v_tex);' +
+            'if(color.w == 0.0) discard;'+
             'gl_FragColor = color;' +
             '}');
         gl.compileShader(fShader);

@@ -48,8 +48,6 @@ class Video {
         // Set context
         this.gl = <WebGLRenderingContext>this.canvas.getContext('experimental-webgl', { alpha: false });
         this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-        this.gl.enable(this.gl.BLEND);
         this.gl.enable(this.gl.DEPTH_TEST);
 
         // Load renderers
@@ -123,7 +121,6 @@ class Video {
     }
 
     render() {
-        console.log(this.getProgress());
         // Mesh renderer
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER,this.fb);
         this.gl.viewport(0, 0, WIDTH, HEIGHT);

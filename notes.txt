@@ -4,5 +4,22 @@
 
 - use dir(foo) in python to search attributes
 
-Blender export
+Grid Alignment
+
+Blender
+    - set units none, set subdiv 8
+    - big blocks 64px, small blocks 8px
+    - export OBJ scale 8, forward axis Y
+
+Blender UV
+    - enable UV Magic addon
+    - unwrap
+    - world scale (manual) set to 16px
+    - snap to pixels
+    - big blocks 64px, small blocks 8px
+
+Krita
+    - grid set to 8/8/8, big blocks 64px, small blocks 8px
+
+
 
