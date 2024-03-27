@@ -32,10 +32,16 @@ class RetroRenderer {
         'varying vec2 v_tex;' +
         'void main() {' +
             'vec3 color = texture2D(u_image, v_tex).xyz * 2.0;' +
-            'float offsetY = mod(v_tex.y*'+height+'.0,2.0);' +
-            'float offsetX = mod(v_tex.x*'+width+'.0,2.0);' +
-            'if(offsetY >= 0.0 && offsetY < 1.0) color *= 0.5;' +
-            'if(offsetX >= 0.0 && offsetX < 1.0) color *= 0.5;' +
+            'float row = floor(mod(gl_FragCoord.y,4.0));' +
+            'float col = floor(mod(gl_FragCoord.x,4.0));' +
+            'if(row == 0.0) color *= 0.5;' +
+            'if(row == 1.0) color.y *= 0.75;' +
+            'if(row == 2.0) color *= 0.5;' +
+            'if(row == 3.0) color.x *= 0.75;' +
+            'if(col == 0.0) color *= 0.75;' +
+            'if(col == 1.0) color.z *= 0.75;' +
+            'if(col == 2.0) color *= 0.75;' +
+            'if(col == 3.0) color *= 1.0;' +
             'gl_FragColor = vec4(color,1.0);' +
             '}');
         gl.compileShader(fShader);

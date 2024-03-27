@@ -12,7 +12,7 @@ class AttractScreen implements Stage{
             'ship2':v.addSprite(140,360,24,24,168,0,2),
             'shipS':v.addSprite(102,362,24,24,48,24,2),
             'ship2S':v.addSprite(142,362,24,24,48,24,2),
-            'carrier':v.addMesh(120,180,6,3)
+            'carrier':v.addMesh(90,84,6,3)
         };
         let m = this.meshes;
         m.carrier.z = -.001;

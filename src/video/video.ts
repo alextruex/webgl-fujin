@@ -6,8 +6,8 @@ import Mesh from '../common/mesh';
 import VertexCache from './vertexcache';
 import TextureCache from './texturecache';
 
-const WIDTH = 240;
-const HEIGHT = 420;
+const WIDTH = 180;
+const HEIGHT = 320;
 
 class Video {
     canvas: HTMLCanvasElement;
@@ -41,7 +41,7 @@ class Video {
         this.canvas.style.height = '100vh';
         this.canvas.style.maxHeight = HEIGHT / WIDTH * 100 + 'vw';
         this.canvas.style.maxWidth = '100vw';
-        this.canvas.style.imageRendering = 'optimizeLegibility';
+        //this.canvas.style.imageRendering = 'optimizeLegibility';
         document.body.style.margin = '0px';
         document.body.style.backgroundColor = '#333333';
 
