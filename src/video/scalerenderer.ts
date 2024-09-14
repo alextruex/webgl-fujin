@@ -1,6 +1,6 @@
 import VertexCache from "./vertexcache";
 
-class RetroRenderer {
+class ScaleRenderer {
     width:number;
     height:number;
 
@@ -31,36 +31,26 @@ class RetroRenderer {
         'uniform sampler2D u_image;' +
         'varying vec2 v_tex;' +
         'void main() {' +
-            'vec3 color = vec3(0.0,0.0,0.0);'+
-            'float row = floor(mod(gl_FragCoord.y,2.0));' +
-            'float col = floor(mod(gl_FragCoord.x,2.0));' +
-
-            'color += texture2D(u_image, v_tex).xyz * 0.1;' +
-            'if(row == 0.0) color += texture2D(u_image, v_tex).xyz * 1.0;' +
-            'if(col == 0.0) color += texture2D(u_image, v_tex).xyz * 1.0;' +
-            //'color += texture2D(u_image, vec2(v_tex.x + 0.005,v_tex.y)).xyz * 0.25;' +
-            //'color += texture2D(u_image, vec2(v_tex.x + 0.005,v_tex.y)).xyz * 0.15;' +
+            'vec3 color = texture2D(u_image, v_tex).xyz;' +
+            //'float row = floor(mod(gl_FragCoord.y,2.0));' +
+            //'float col = floor(mod(gl_FragCoord.x,2.0));' +
             /*
             'if(row == 0.0 && col == 0.0) color *= 0.5;' +
-            'if(row == 0.0 && col == 1.0) color *= 0.5;' +
-            'if(row == 0.0 && col == 2.0) color *= 0.5;' +
+            'if(row == 0.0 && col == 1.0) color *= 0.75;' +
+            'if(row == 0.0 && col == 2.0) color *= 1.0;' +
             'if(row == 0.0 && col == 3.0) color *= 0.5;' +
-            'if(row == 1.0 && col == 0.0) color *= 0.5;' +
+            'if(row == 1.0 && col == 0.0) color *= 0.75;' +
             'if(row == 1.0 && col == 1.0) color *= 1.0;' +
             'if(row == 1.0 && col == 2.0) color *= 1.0;' +
             'if(row == 1.0 && col == 3.0) color *= 1.0;' +
-            'if(row == 2.0 && col == 0.0) color *= 0.5;' +
-            'if(row == 2.0 && col == 1.0) color *= 1.0;' +
-            'if(row == 2.0 && col == 2.0) color *= 1.0;' +
-            'if(row == 2.0 && col == 3.0) color *= 1.0;' +
-            'if(row == 3.0 && col == 0.0) color *= 0.5;' +
-            'if(row == 3.0 && col == 1.0) color *= 1.0;' +
-            'if(row == 3.0 && col == 2.0) color *= 1.0;' +
-            'if(row == 3.0 && col == 3.0) color *= 1.0;' +
+            */
+    
+            /*
+            'if(row == 0.0 && col == 1.0) color *= 1.0;' +
+            'if(row == 0.1 && col == 0.0) color *= 0.25;' +
+            'if(row == 0.1 && col == 1.0) color *= 1.0;' +
             */
 
-
-            
 
             'gl_FragColor = vec4(color,1.0);' +
             '}');
@@ -97,4 +87,4 @@ class RetroRenderer {
     }
 }
 
-export default RetroRenderer;
+export default ScaleRenderer;

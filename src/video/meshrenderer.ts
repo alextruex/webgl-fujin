@@ -100,7 +100,7 @@ class MeshRenderer {
                             1, 0, 0, 0,
                             0, 1, 0, 0,
                             0, 0, 1, 0,
-                            m.x, -m.y, m.z, 1
+                            Math.round(m.x), Math.round(-m.y), Math.round(m.z), 1
                         ]);
                     }
 

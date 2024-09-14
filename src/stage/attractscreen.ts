@@ -8,11 +8,11 @@ class AttractScreen implements Stage{
     constructor(game:Game){
         let v = game.video;
         this.meshes = {
-            'ship':v.addSprite(100,360,24,24,48,0,2),
-            'ship2':v.addSprite(140,360,24,24,168,0,2),
-            'shipS':v.addSprite(102,362,24,24,48,24,2),
-            'ship2S':v.addSprite(142,362,24,24,48,24,2),
-            'carrier':v.addMesh(90,84,6,3)
+            'ship':v.addSprite(100,220,24,24,48,0,2),
+            'ship2':v.addSprite(140,240,24,24,168,0,2),
+            'shipS':v.addSprite(102,222,24,24,48,24,2),
+            'ship2S':v.addSprite(142,242,24,24,48,24,2),
+            'carrier':v.addMesh(120,54,6,3)
         };
         let m = this.meshes;
         m.carrier.z = -.001;

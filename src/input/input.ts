@@ -20,6 +20,7 @@ class Input{
             mouseY:0
         };
         document.addEventListener('keydown',(e) => {
+            e.preventDefault();
             this.map[e.keyCode] = 1;
         });
         document.addEventListener('keyup',(e) => {
