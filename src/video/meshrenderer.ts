@@ -15,6 +15,8 @@ class MeshRenderer {
     a_tex: number;
     u_pos: WebGLUniformLocation;
     u_tex: WebGLUniformLocation;
+    u_col: WebGLUniformLocation;
+    u_mod: WebGLUniformLocation;
 
     constructor(width: number, height: number, gl: WebGLRenderingContext) {
         // Set renderer resolution
@@ -43,8 +45,12 @@ class MeshRenderer {
             'precision mediump float;' +
             'varying vec2 v_tex;' +
             'uniform sampler2D u_texture;' +
+            'uniform vec4 u_col;' +
+            'uniform float u_mod;' +
             'void main() {' +
-            'vec4 color = texture2D(u_texture, v_tex);' +
+            'vec4 color = vec4(0.0,0.0,0.0,0.0);' +
+            'if(u_mod == 1.0) color = u_col;' +
+            'else color = texture2D(u_texture, v_tex);' +
             'if(color.w == 0.0) discard;'+
             'gl_FragColor = color;' +
             '}');
@@ -63,6 +69,8 @@ class MeshRenderer {
         gl.enableVertexAttribArray(this.a_tex);
         this.u_pos = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_pos');
         this.u_tex = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_tex');
+        this.u_col = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_col');
+        this.u_mod = <WebGLUniformLocation>gl.getUniformLocation(this.prog, 'u_mod');
     }
 
     setProg(gl: WebGLRenderingContext) {
@@ -160,9 +168,17 @@ class MeshRenderer {
                     // Set matrix
                     gl.uniformMatrix4fv(this.u_pos, false, matrix);
                     gl.uniformMatrix3fv(this.u_tex, false, uvMatrix);
+                    gl.uniform4fv(this.u_col,[1.0,0.0,0.0,1.0]);
+                    gl.uniform1fv(this.u_mod,[m.wireframe])
 
+                    if(m.wireframe){
+                        gl.drawArrays(gl.LINE_STRIP, vCache.start[m.model], vCache.count[m.model]);
+                    }
+                    else{
+                        gl.drawArrays(gl.TRIANGLES, vCache.start[m.model], vCache.count[m.model]);
+                    }
                     // Draw
-                    gl.drawArrays(gl.TRIANGLES, vCache.start[m.model], vCache.count[m.model]);
+                    
                 }
             }
         }

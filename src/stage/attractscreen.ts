@@ -12,11 +12,14 @@ class AttractScreen implements Stage{
             'ship2':v.addSprite(140,240,24,24,168,0,2),
             'shipS':v.addSprite(102,222,24,24,48,24,2),
             'ship2S':v.addSprite(142,242,24,24,48,24,2),
-            'carrier':v.addMesh(120,54,6,3)
+            'carrier':v.addMesh(120,54,6,3),
+            'carrier2':v.addMesh(120,54,6,0)
         };
         let m = this.meshes;
         m.carrier.z = -.001;
         m.carrier.ortho = false;
+        m.carrier2.wireframe = 1;
+        m.carrier2.ortho = false;
     }
 
     update(game:Game){
@@ -27,6 +30,7 @@ class AttractScreen implements Stage{
 
         if(i.poll('ArrowUp')){
             this.meshes.carrier.y += 1;
+            this.meshes.carrier2.y += 1;
             this.meshes.ship.y -= 1;
             this.meshes.shipS.y -= 1;
             this.meshes.ship2.y -= .5;
