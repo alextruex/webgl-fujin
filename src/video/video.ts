@@ -84,7 +84,7 @@ class Video {
 
         // Load renderers
         this.meshRn = new MeshRenderer(WIDTH, HEIGHT, this.gl);
-        this.retroRn = new RetroRenderer(WIDTH * 2, HEIGHT * 2, this.gl);
+        this.retroRn = new RetroRenderer(WIDTH * 3, HEIGHT * 3, this.gl);
         this.scaleRn = new ScaleRenderer(this.canvas.width, this.canvas.height, this.gl);
 
         // Load resources
@@ -119,7 +119,7 @@ class Video {
         // Set retro fb color
         this.retroFBColor = <WebGLTexture>this.gl.createTexture();
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.retroFBColor);
-        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, WIDTH * 2, HEIGHT * 2, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, WIDTH * 3, HEIGHT * 3, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
@@ -130,7 +130,7 @@ class Video {
         // Set retro fb depth
         this.retroFBDepth = <WebGLRenderbuffer>this.gl.createRenderbuffer();
         this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.retroFBDepth);
-        this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, WIDTH * 2, HEIGHT * 2);
+        this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, WIDTH * 3, HEIGHT * 3);
 
         // Set retro framebuffer
         this.retroFB = <WebGLFramebuffer>this.gl.createFramebuffer();
@@ -182,7 +182,7 @@ class Video {
 
         // Retro renderer
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.retroFB);
-        this.gl.viewport(0, 0, WIDTH * 2, HEIGHT * 2);
+        this.gl.viewport(0, 0, WIDTH * 3, HEIGHT * 3);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.meshFBColor);
         this.retroRn.setProg(this.gl);

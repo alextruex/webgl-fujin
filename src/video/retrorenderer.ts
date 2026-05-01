@@ -12,6 +12,7 @@ class RetroRenderer {
         // Set renderer resolution
         this.width = width;
         this.height = height;
+        console.log('height: 0.0015625' + this.height);
 
         // Load vertex shader
         let vShader = <WebGLShader>gl.createShader(gl.VERTEX_SHADER);
@@ -32,12 +33,61 @@ class RetroRenderer {
         'varying vec2 v_tex;' +
         'void main() {' +
             'vec3 color = vec3(0.0,0.0,0.0);'+
-            'float row = floor(mod(gl_FragCoord.y,2.0));' +
-            'float col = floor(mod(gl_FragCoord.x,2.0));' +
+            //'float col = floor(mod(gl_FragCoord.x,6.0));' +
+            //'float row = floor(mod(gl_FragCoord.y,6.0));' +
 
-            'color += texture2D(u_image, v_tex).xyz * 0.1;' +
-            'if(row == 0.0) color += texture2D(u_image, v_tex).xyz * 1.0;' +
-            'if(col == 0.0) color += texture2D(u_image, v_tex).xyz * 1.0;' +
+
+            // y shift
+            'float yOffset = floor(floor(mod(gl_FragCoord.x,6.0))/3.0);' +
+            'float yShift = yOffset*' + 1/width + ';' +
+
+            // color shift
+            'float colorShift = (mod(gl_FragCoord.x,3.0))*(mod(gl_FragCoord.y + yOffset,3.0))*0.2+0.3;'+
+
+            'color += texture2D(u_image,vec2(v_tex.x,v_tex.y+yShift)).xyz * colorShift;' +
+
+            // color bleed
+            'color += texture2D(u_image,vec2(v_tex.x+0.003,v_tex.y)).xyz*0.2;' +
+            'color += texture2D(u_image,vec2(v_tex.x-0.003,v_tex.y)).xyz*0.2;' +
+
+
+            
+
+             //'color += texture2D(u_image, v_tex).xyz;'+
+
+            //y offset by two for rows 5 6 7 8
+            //r color only for rows 1
+            // g for row 2
+            // b for row 3
+            // black for row 4, and 
+
+            //'if(rowShift <= 2.0){' +
+            //'if(col == 0.0) color += texture2D(u_image, v_tex).xyz*1.25;' +
+            //'if(col == 1.0) color += texture2D(u_image, v_tex).xyz*1.0;' +
+            //'if(col == 2.0) color += texture2D(u_image, v_tex).xyz*0.55;' +
+            //'if(col == 3.0) color += texture2D(u_image,vec2(v_tex.x,v_tex.y+0.0015625)).xyz*1.0;' +
+            //'if(col == 4.0) color += texture2D(u_image,vec2(v_tex.x,v_tex.y+0.0015625)).xyz*1.25;' +
+            //'if(col == 5.0) color += texture2D(u_image,vec2(v_tex.x,v_tex.y+0.0015625)).xyz*0.55;' +
+            //'if(col == 3.0) color += texture2D(u_image,vec2(v_tex.x,v_tex.y+0.0015625)).xyz*0.55;' +
+            //'if(col == 3.0) color.z += texture2D(u_image, v_tex).z;' +
+            //'color += texture2D(u_image,vec2(v_tex.x,v_tex.y)).xyz;' +
+
+            //'}else{' +
+            //'if(col == 0.0) color += texture2D(u_image,vec2(v_tex.x,v_tex.y+0.02)).xyz' +
+            
+            //'color += texture2D(u_image,vec2(v_tex.x,v_tex.y)).xyz;' +
+            //'}'+
+
+
+            //'color += texture2D(u_image, v_tex).xyz * 0.1;' +
+            //'if(row == 0.0) color += texture2D(u_image, v_tex).xyz * 1.0;' +
+            //'if(col == 0.0) color += texture2D(u_image, v_tex).xyz * 1.0;' +
+
+            // position offset
+
+            // color offset
+            
+
             //'color += texture2D(u_image, vec2(v_tex.x + 0.005,v_tex.y)).xyz * 0.25;' +
             //'color += texture2D(u_image, vec2(v_tex.x + 0.005,v_tex.y)).xyz * 0.15;' +
             /*
